@@ -40,6 +40,6 @@ export async function onRequestGet({ request, env }) {
     }
   }
   const signature = signMintPass(env.SIGNER_KEY, env.CHAIN_ID, env.CONTRACT_ADDRESS, wallet, 2, deadline);
-  return json({ ...base, type: "PUBLIC", function: "publicMint(quantity, deadline, signature)", maxQuantity: 3,
-                priceBNB: PRICE_BNB, note: "Paid mint: send exactly 0.00022 BNB per NFT. Max 3 paid per wallet.", signature });
+  return json({ ...base, type: "PUBLIC", function: "publicMint(quantity, deadline, signature)", maxQuantity: 5,
+                priceBNB: PRICE_BNB, note: "Paid mint: send exactly 0.00022 BNB per NFT. Max 5 paid per wallet.", signature });
 }

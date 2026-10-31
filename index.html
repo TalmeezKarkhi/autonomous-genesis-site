@@ -31,7 +31,7 @@
     <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Autonomous Genesis", "url": "https://autonomousgenesis.xyz/", "logo": "https://autonomousgenesis.xyz/icon-512.png", "sameAs": ["https://x.com/Autonomousgen"]}, {"@type": "WebSite", "name": "Autonomous Genesis", "alternateName": "AUTOG", "url": "https://autonomousgenesis.xyz/", "description": "Autonomous Genesis is 2,222 generative neural artworks on BNB Chain, minted by AI agent wallets. Random on-chain reveal, four rarity tiers, no token. First 500 mint free."}]}</script>
     <!-- /SEO -->
     <title>Autonomous Genesis (AUTOG) · AI-Agent-Minted NFT Collection on BNB Chain</title>
-<meta name="description" content="2,222 generative neural artworks on BNB Chain. Minted by AI agent wallets: first 500 mint free, then 0.00022 BNB, up to 3 per wallet." />
+<meta name="description" content="2,222 generative neural artworks on BNB Chain. Minted by AI agent wallets: first 500 mint free, then 0.00022 BNB, up to 5 per wallet." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" />
@@ -277,7 +277,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
         <div class="x-hero__l">
           <p class="x-status x-mono"><i></i>Agent network online</p>
           <h1 class="x-serif">Art made by machines. Minted only by AI.</h1>
-          <p class="x-hero__sub">2,222 generative neural artworks on BNB Chain. Minted by AI agent wallets: first 500 mint free, then 0.00022 BNB, up to 3 per wallet.</p>
+          <p class="x-hero__sub">2,222 generative neural artworks on BNB Chain. Minted by AI agent wallets: first 500 mint free, then 0.00022 BNB, up to 5 per wallet.</p>
           <div class="x-btns">
             <a class="x-btn" id="heroCta" href="#mint">Mint details</a>
             <a class="x-btn x-btn--line" href="#collection">View collection</a>
@@ -306,7 +306,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
       <div class="x-grid x-head x-rv"><p class="x-label">01 — Protocol</p><div class="x-head__t"><h2 class="x-serif">One rule: only agents mint.</h2></div></div>
       <div class="x-cols x-rv">
         <div><span class="x-mono">i.</span><h3>Machine-made art</h3><p>2,222 generative pieces across 8 trait groups: Palette, Pattern, Symmetry, Density, Core, Background, Line and Rarity. No two share the same traits.</p></div>
-        <div><span class="x-mono">ii.</span><h3>Minted by agents</h3><p>Open to all AI agent wallets. The first 500 mints are free (gas only), 1 per wallet. After that, up to 3 per wallet at 0.00022 BNB each.</p></div>
+        <div><span class="x-mono">ii.</span><h3>Minted by agents</h3><p>Open to all AI agent wallets. The first 500 mints are free (gas only), 1 per wallet. After that, up to 5 per wallet at 0.00022 BNB each.</p></div>
         <div><span class="x-mono">iii.</span><h3>Fair by design</h3><p>Mint order never decides your art. Every token shows the sealed Vault, then one random on-chain reveal assigns all 2,222 pieces at random, so no one can snipe Legendaries.</p></div>
       </div>
     </div>
@@ -365,7 +365,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
           <dl class="x-spec">
             <div><dt>Status</dt><dd id="mintStatus">Not live yet</dd></div>
             <div><dt>First 500</dt><dd>Free (gas only) · 1 per wallet</dd></div>
-            <div><dt>After 500</dt><dd>0.00022 BNB · 3 per wallet</dd></div>
+            <div><dt>After 500</dt><dd>0.00022 BNB · 5 per wallet</dd></div>
             <div><dt>Supply</dt><dd>2,222</dd></div>
             <div><dt>Mint date</dt><dd>2026-10-31 · 18:30 UTC · 12h</dd></div>
             <div><dt>Contract</dt><dd id="caCell">TBA<small>Posted only here and on X</small></dd></div>
@@ -441,7 +441,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
       </div>
 <script>
 (function(){var f=document.getElementById("chkForm");if(!f)return;var i=document.getElementById("chkWallet"),b=document.getElementById("chkBtn"),o=document.getElementById("chkOut"),fd=document.getElementById("fChk");
-var M={approved:["#9fd3a8","Approved ✓ This agent wallet is whitelisted: 1 free mint (gas only) during the 1-hour WL window."],pending:["#e0c27a","Pending. This wallet is registered but not approved yet. Check back before mint."],none:["#d98a7e","Not registered. You can still mint in public: open to all AI agent wallets, up to 3 per wallet at 0.00022 BNB each."]};
+var M={approved:["#9fd3a8","Approved ✓ This agent wallet is whitelisted: 1 free mint (gas only) during the 1-hour WL window."],pending:["#e0c27a","Pending. This wallet is registered but not approved yet. Check back before mint."],none:["#d98a7e","Not registered. You can still mint in public: open to all AI agent wallets, up to 5 per wallet at 0.00022 BNB each."]};
 function show(c,t){o.hidden=false;o.style.color=c;o.textContent=t}
 f.onsubmit=function(e){e.preventDefault();var w=i.value.trim();if(!/^0x[0-9a-fA-F]{40}$/.test(w)){fd.classList.add("is-bad");o.hidden=true;return}fd.classList.remove("is-bad");b.disabled=true;b.textContent="Checking…";
 fetch("/api/wl-check?wallet="+encodeURIComponent(w),{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){if(d.ok&&M[d.status])show(M[d.status][0],M[d.status][1]);else show("#d98a7e",d.error||"Couldn't check right now. Try again.")}).catch(function(){show("#d98a7e","Couldn't check right now. Try again.")}).then(function(){b.disabled=false;b.textContent="Check wallet"})};
@@ -467,9 +467,9 @@ i.oninput=function(){fd.classList.remove("is-bad")}})();
     <div class="x-wrap">
       <div class="x-grid x-head x-rv"><p class="x-label">06 — FAQ</p><div class="x-head__t"><h2 class="x-serif">Questions.</h2></div></div>
       <div class="x-grid"><div class="x-faq x-rv" style="grid-column:4/13">
-        <details><summary>Who can mint?</summary><p>All AI agent wallets. No whitelist. The first 500 mints are free (gas only), 1 per wallet. After that, up to 3 per wallet at 0.00022 BNB each.</p></details>
+        <details><summary>Who can mint?</summary><p>All AI agent wallets. No whitelist. The first 500 mints are free (gas only), 1 per wallet. After that, up to 5 per wallet at 0.00022 BNB each.</p></details>
         <details><summary>How many are there?</summary><p>2,222: 22 Legendary, 222 Rare, 666 Uncommon and 1,312 Common.</p></details>
-                <details><summary>What does it cost?</summary><p>The first 500 are free, 1 per wallet, you pay only gas. Then 0.00022 BNB each, up to 3 per wallet.</p></details>
+                <details><summary>What does it cost?</summary><p>The first 500 are free, 1 per wallet, you pay only gas. Then 0.00022 BNB each, up to 5 per wallet.</p></details>
         <details><summary>When is the mint?</summary><p>2026-10-31 at 18:30 UTC. It runs 12 hours.</p></details>
         <details><summary>Where can I trade?</summary><p>Element on BNB Chain, after mint.</p></details>
         <details><summary>Is there a token?</summary><p>No. Anyone selling one is a scam.</p></details>
@@ -653,14 +653,14 @@ function build(c,id){
 var net=id===97?"BNB Smart Chain Testnet":"BNB Smart Chain (BSC) Mainnet",scan=id===97?"https://testnet.bscscan.com":"https://bscscan.com",ca=c||"[not live yet: use the \"contract\" value from the mint pass, and confirm it matches the one on "+SITE+"]";
 return "You are my AI agent. Mint the Autonomous Genesis (AUTOG) NFT for me from YOUR OWN agent wallet (the wallet linked to my agent ID).\n\n"+
 "COLLECTION\n- Name: Autonomous Genesis (AUTOG), ERC-721, 2,222 supply\n- Network: "+net+"\n- Chain ID: "+id+"\n- Contract: "+ca+"\n- Official site: "+SITE+"\n- Official X: @Autonomousgen\n\n"+
-"PRICES\n- First 500 mints: free (0 BNB), 1 per wallet\n- After that: 0.00022 BNB each (220000000000000 wei), max 3 per wallet\n- Keep a little extra BNB in the wallet for gas\n\n"+
+"PRICES\n- First 500 mints: free (0 BNB), 1 per wallet\n- After that: 0.00022 BNB each (220000000000000 wei), max 5 per wallet\n- Keep a little extra BNB in the wallet for gas\n\n"+
 "STEPS\n1. Use your agent wallet address. The same wallet must send the mint transaction.\n"+
 "2. Get a mint pass:\n   GET "+SITE+"/api/mint-pass?wallet=<YOUR_AGENT_WALLET>\n"+
 "   - If \"eligible\" is false, stop and tell me the \"reason\".\n"+
 "   - Check \"chainId\" is "+id+(c?" and \"contract\" is "+c:" and \"contract\" matches the address posted on "+SITE)+". If not, stop.\n"+
 "3. The pass is valid for 15 minutes. Send ONE transaction to the contract on chain ID "+id+":\n"+
 "   - If \"type\" is \"FREE\": call wlMint(deadline, signature) with value 0.\n"+
-"   - If \"type\" is \"PUBLIC\": call publicMint(quantity, deadline, signature). Use quantity 1 unless I say up to 3. Value = quantity x 0.00022 BNB.\n"+
+"   - If \"type\" is \"PUBLIC\": call publicMint(quantity, deadline, signature). Use quantity 1 unless I say up to 5. Value = quantity x 0.00022 BNB.\n"+
 "   - Use \"deadline\" and \"signature\" exactly as returned.\n"+
 "   - After a FREE mint, to also buy paid ones, request a new pass with &type=paid added to the URL.\n"+
 "4. If the pass expires or the transaction fails, request a fresh pass once and retry. Then report.\n"+
