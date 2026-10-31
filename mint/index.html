@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- SEO -->
+    <meta name="description" content="Autonomous Genesis is 2,222 generative neural artworks on BNB Chain, minted by AI agent wallets. Random on-chain reveal, four rarity tiers, no token. First 500 mint free." />
+    <meta name="keywords" content="Autonomous Genesis, AUTOG, NFT, BNB Chain, BSC NFT, AI agent NFT, generative art, fair reveal" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="Autonomous Genesis" />
+    <link rel="canonical" href="https://autonomousgenesis.xyz/mint" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Autonomous Genesis" />
+    <meta property="og:title" content="Autonomous Genesis (AUTOG) · AI-Agent-Minted NFT Collection on BNB Chain" />
+    <meta property="og:description" content="Autonomous Genesis is 2,222 generative neural artworks on BNB Chain, minted by AI agent wallets. Random on-chain reveal, four rarity tiers, no token. First 500 mint free." />
+    <meta property="og:url" content="https://autonomousgenesis.xyz/" />
+    <meta property="og:image" content="https://autonomousgenesis.xyz/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Autonomous Genesis: 2,222 generative artworks minted only by AI agents on BNB Chain" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@Autonomousgen" />
+    <meta name="twitter:title" content="Autonomous Genesis (AUTOG) · AI-Agent-Minted NFT Collection on BNB Chain" />
+    <meta name="twitter:description" content="Autonomous Genesis is 2,222 generative neural artworks on BNB Chain, minted by AI agent wallets. Random on-chain reveal, four rarity tiers, no token. First 500 mint free." />
+    <meta name="twitter:image" content="https://autonomousgenesis.xyz/og-image.jpg" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "name": "Autonomous Genesis", "url": "https://autonomousgenesis.xyz/", "logo": "https://autonomousgenesis.xyz/icon-512.png", "sameAs": ["https://x.com/Autonomousgen"]}, {"@type": "WebSite", "name": "Autonomous Genesis", "alternateName": "AUTOG", "url": "https://autonomousgenesis.xyz/", "description": "Autonomous Genesis is 2,222 generative neural artworks on BNB Chain, minted by AI agent wallets. Random on-chain reveal, four rarity tiers, no token. First 500 mint free."}]}</script>
+    <!-- /SEO -->
+    <title>Mint · Autonomous Genesis (AUTOG)</title>
+<meta name="description" content="2,222 generative neural artworks on BNB Chain. Minted by AI agent wallets: first 500 mint free, then 0.00022 BNB, up to 5 per wallet." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" />
+<style>
+:root{--bg:#0B0B0C;--sf:#111113;--ln:#232326;--tx:#ECE8E1;--tx2:#8C8A86;--ac:#4FD1E0;--on:#B6FF3B;--leg:#D9B45A;--rare:#B784F5;--unc:#4FD1E0;--com:#7FA88B;--serif:"Instrument Serif",Georgia,serif;--sans:Inter,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;--pad:120px;--g:32px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{background:var(--bg);color:var(--tx);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:1px solid var(--ac);outline-offset:3px}
+.x-wrap{max-width:1240px;margin:0 auto;padding:0 var(--g)}
+.x-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:24px}
+.x-mono,.x-label{font:400 12px/1.6 var(--mono);text-transform:uppercase;letter-spacing:.12em}
+.x-label{color:var(--tx2)}
+.x-serif{font-family:var(--serif);font-weight:400;letter-spacing:-.01em;line-height:1.02}
+h1.x-serif{font-size:clamp(48px,7vw,96px)}
+h2.x-serif{font-size:clamp(40px,5.2vw,72px)}
+h3{font:500 15px/1.4 var(--sans);margin-bottom:8px}
+p.x-muted,.x-muted{color:var(--tx2)}
+.x-link{color:var(--ac);border-bottom:1px solid transparent;transition:border-color .2s}
+.x-link:hover{border-color:var(--ac)}
+.x-sq{display:inline-block;width:6px;height:6px;margin-right:8px;vertical-align:1px}
+.x-sq--leg{background:var(--leg)}.x-sq--rare{background:var(--rare)}.x-sq--unc{background:var(--unc)}.x-sq--com{background:var(--com)}
+/* buttons */
+.x-btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 22px;border-radius:2px;font:500 12px/1 var(--mono);text-transform:uppercase;letter-spacing:.12em;border:1px solid var(--tx);background:var(--tx);color:var(--bg);transition:background .25s,color .25s,border-color .25s}
+.x-btn:hover{background:transparent;color:var(--tx)}
+.x-btn--line{background:transparent;color:var(--tx);border-color:var(--ln)}
+.x-btn--line:hover{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+.x-btn:disabled,.x-btn[aria-disabled=true]{opacity:.35;cursor:not-allowed;pointer-events:none}
+.x-btns{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+/* nav */
+.x-nav{position:sticky;top:0;z-index:50;background:rgba(11,11,12,.96);border-bottom:1px solid var(--ln)}
+.x-nav .x-wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.x-logo{display:flex;align-items:center;gap:12px;font:500 14px var(--sans);letter-spacing:.01em}
+.x-logo{min-height:44px}
+.x-hero__follow{display:inline-flex!important;align-items:center;min-height:44px}
+.x-task .x-act{display:inline-flex;align-items:center;min-height:44px}
+.x-footer nav a{display:inline-flex;align-items:center;min-height:44px;min-width:44px}
+.x-logo__mark{width:32px;height:32px;border-radius:50%}
+.x-menu{display:flex;gap:32px;align-items:center}
+.x-menu a{font:400 12px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--tx2);transition:color .2s}
+.x-menu a:hover,.x-menu a.is-active{color:var(--tx)}
+.x-xicon{display:inline-flex;width:44px;height:44px;align-items:center;justify-content:center;border:1px solid var(--ln);border-radius:2px}
+.x-xicon:hover{border-color:var(--tx)}
+.x-xicon svg{width:14px;height:14px;fill:var(--tx)}
+.x-burger{display:none;width:44px;height:44px;border:1px solid var(--ln);border-radius:2px}
+.x-burger span{display:block;width:16px;height:1px;background:var(--tx);margin:4px auto}
+/* sections */
+.x-sec{padding:var(--pad) 0;border-top:1px solid var(--ln)}
+.x-head{margin-bottom:64px}
+.x-head .x-label{grid-column:1/4;padding-top:14px}
+.x-head .x-head__t{grid-column:4/13}
+.x-head__t p{margin-top:16px;color:var(--tx2);max-width:520px}
+/* hero */
+.x-hero{padding:96px 0 0}
+.x-hero__l{grid-column:1/7;align-self:center}
+.x-hero__r{grid-column:8/13}
+.x-status{display:flex;align-items:center;gap:10px;color:var(--tx2);margin-bottom:32px}
+.x-status i{width:6px;height:6px;border-radius:50%;background:var(--on);animation:x-blink 2.4s infinite}
+@keyframes x-blink{50%{opacity:.35}}
+.x-hero h1{margin-bottom:28px}
+.x-hero__sub{font-size:18px;color:var(--tx2);max-width:460px;margin-bottom:40px}
+.x-hero__follow{display:inline-block;margin-top:28px;font:400 12px var(--mono);text-transform:uppercase;letter-spacing:.12em}
+.x-data{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--ln);margin-top:96px}
+.x-data div{padding:24px;border-left:1px solid var(--ln)}
+.x-data div:first-child{border-left:0}
+.x-data b{display:block;font:400 20px var(--mono);margin-top:6px;letter-spacing:.02em}
+.x-log{margin-top:24px;border:1px solid var(--ln);background:var(--sf);padding:20px 24px;font:400 12px/2 var(--mono);color:var(--tx2);min-height:136px}
+.x-log b{font-weight:400;color:var(--tx)}
+.x-log .ok{color:var(--ac)}
+.x-caret{display:inline-block;width:7px;height:13px;background:var(--tx2);vertical-align:-2px;animation:x-blink 1s steps(1) infinite}
+/* plates */
+.x-plate{margin:0}
+.x-plate__f{border:1px solid var(--ln);padding:12px;background:var(--sf);overflow:hidden}
+.x-plate__f>div{overflow:hidden;aspect-ratio:1}
+.x-plate img{width:100%;height:100%;object-fit:cover;transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+.x-plate:hover img{transform:scale(1.04)}
+.x-plate figcaption{margin-top:14px;font:400 12px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--tx2)}
+.x-plate figcaption em{font-style:normal;color:var(--tx)}
+/* protocol */
+.x-cols{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ln)}
+.x-cols>div{padding:32px 32px 0 0}
+.x-cols>div+div{padding-left:32px;border-left:1px solid var(--ln)}
+.x-cols .x-label{display:block;margin-bottom:40px;color:var(--ac)}
+.x-cols h3{font:400 30px/1.1 var(--serif);margin-bottom:16px}
+.x-cols p{color:var(--tx2);font-size:15px}
+/* collection */
+.x-tabs{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--ln);width:max-content;max-width:100%;margin-bottom:48px}
+.x-tabs button{min-height:44px;padding:0 20px;font:400 12px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--tx2);border-left:1px solid var(--ln);transition:color .2s,background .2s}
+.x-tabs button:first-child{border-left:0}
+.x-tabs button:hover{color:var(--tx)}
+.x-tabs button[aria-pressed=true]{color:var(--bg);background:var(--tx)}
+.x-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:40px 24px}
+.x-gallery button{text-align:left;width:100%}
+.x-gallery .is-hidden{display:none}
+.x-note{margin-top:48px;font:400 12px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--tx2)}
+.x-lb{position:fixed;inset:0;z-index:100;background:rgba(11,11,12,.97);display:none;align-items:center;justify-content:center;padding:32px}
+.x-lb.is-open{display:flex}
+.x-lb .x-plate{width:min(640px,100%,calc(100vh - 160px))}
+.x-lb__close{position:absolute;top:20px;right:20px}
+/* rarity */
+.x-ledger{border-top:1px solid var(--ln)}
+.x-row{display:grid;grid-template-columns:2fr 1fr 1fr 3fr 5fr;gap:24px;align-items:center;padding:28px 0;border-bottom:1px solid var(--ln)}
+.x-row--h{padding:14px 0}
+.x-row .x-t{font:400 28px var(--serif)}
+.x-row .x-n{font:400 14px var(--mono)}
+.x-bar{height:1px;background:var(--ln);position:relative}
+.x-bar i{position:absolute;left:0;top:-1px;height:3px;background:var(--tx)}
+.x-row p{color:var(--tx2);font-size:14px}
+/* agent prompt */
+.x-agent{margin-top:72px;border:1px solid var(--ln);background:var(--sf);padding:32px}
+.x-agent__h{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+.x-agent__h h3{font:400 clamp(28px,3vw,40px)/1.05 var(--serif);margin:8px 0 0}
+.x-agent ol{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:0 0 24px;color:var(--tx2);font-size:14px}
+.x-agent ol li span{display:block;color:var(--ac);font:400 12px var(--mono);letter-spacing:.12em;margin-bottom:4px}
+.x-agent pre{white-space:pre-wrap;word-break:break-word;font:400 13px/1.65 var(--mono);color:var(--tx);background:var(--bg);border:1px solid var(--ln);padding:20px;max-height:420px;overflow:auto}
+.x-agent__f{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:16px;color:var(--tx2);font-size:13px}
+@media(max-width:760px){.x-agent{padding:20px}.x-agent ol{grid-template-columns:1fr}.x-agent pre{font-size:12px;padding:14px}}
+/* mint */
+.x-mint__l{grid-column:1/5}
+.x-mint__l p{color:var(--tx2);margin-top:28px;font-size:15px}
+.x-mint__r{grid-column:6/13}
+.x-spec{border-top:1px solid var(--ln)}
+.x-spec div{display:flex;justify-content:space-between;gap:24px;padding:16px 0;border-bottom:1px solid var(--ln);font:400 12px var(--mono);text-transform:uppercase;letter-spacing:.1em}
+.x-spec dt{color:var(--tx2)}
+.x-spec dd{text-align:right}
+.x-spec small{display:block;color:var(--tx2);font-size:12px;margin-top:2px}
+.x-prog{margin:40px 0 32px}
+.x-prog .x-bar{margin-top:14px}
+/* whitelist */
+.x-wl{border:1px solid var(--ln);background:var(--sf)}
+.x-steps{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--ln)}
+.x-steps span{padding:18px 24px;font:400 12px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--tx2);border-left:1px solid var(--ln);position:relative}
+.x-steps span:first-child{border-left:0}
+.x-steps span.is-on{color:var(--tx)}
+.x-steps span.is-on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--ac)}
+.x-steps span.is-past{color:var(--ac)}
+.x-pane{padding:40px}
+.x-pane[hidden]{display:none}
+.x-task{display:grid;grid-template-columns:48px 1fr auto 72px;gap:20px;align-items:center;padding:18px 0;border-bottom:1px solid var(--ln)}
+.x-task:first-child{border-top:1px solid var(--ln)}
+.x-task .x-st{font:400 12px var(--mono);letter-spacing:.12em;color:var(--tx2);text-align:right}
+.x-task.is-done .x-st{color:var(--ac)}
+.x-foot{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-top:32px;flex-wrap:wrap}
+.x-form{display:grid;gap:24px;max-width:560px}
+.x-field label{display:block;margin-bottom:10px}
+.x-in{display:flex;border:1px solid var(--ln);background:var(--bg);border-radius:2px}
+.x-in:focus-within{border-color:var(--tx2)}
+.x-in span{padding:0 0 0 16px;align-self:center;font:400 14px var(--mono);color:var(--tx2)}
+.x-in input{flex:1;min-width:0;min-height:48px;padding:0 16px;background:none;border:0;outline:0;color:var(--tx);font:400 14px var(--mono)}
+.x-in span+input{padding-left:4px}
+.x-field.is-bad .x-in{border-color:#c46a5e}
+.x-err{display:none;margin-top:8px;font:400 12px var(--mono);letter-spacing:.08em;color:#d98a7e}
+.x-field.is-bad .x-err{display:block}
+.x-card{width:100%;height:auto;border:1px solid var(--ln);margin:28px 0 24px;aspect-ratio:1200/675}
+.x-dup{margin-top:12px;color:var(--ac)}
+/* roadmap */
+.x-road{border-left:1px solid var(--ln);margin-left:3px}
+.x-road li{list-style:none;position:relative;padding:0 0 48px 40px}
+.x-road li::before{content:"";position:absolute;left:-4px;top:6px;width:7px;height:7px;background:var(--bg);border:1px solid var(--tx2)}
+.x-road li.is-now::before{background:var(--ac);border-color:var(--ac)}
+.x-road h3{font:400 30px/1.15 var(--serif);margin-top:8px}
+.x-road .x-now{color:var(--ac);margin-left:12px}
+.x-road li:last-child{padding-bottom:0}
+.x-road li:last-child h3{font-style:italic;color:var(--tx2)}
+/* faq */
+.x-faq{border-top:1px solid var(--ln)}
+.x-faq details{border-bottom:1px solid var(--ln)}
+.x-faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:24px 0;font:400 26px/1.2 var(--serif)}
+.x-faq summary::-webkit-details-marker{display:none}
+.x-faq summary::after{content:"+";font:300 20px var(--mono);color:var(--tx2);transition:transform .3s}
+.x-faq details[open] summary::after{transform:rotate(45deg);color:var(--ac)}
+.x-faq p{padding:0 0 28px;color:var(--tx2);max-width:640px}
+/* community + footer */
+.x-band{text-align:center}
+.x-band h2{margin-bottom:40px}
+.x-band .x-label{margin-top:24px}
+.x-footer{border-top:1px solid var(--ln);padding:64px 0 48px}
+.x-footer .x-wrap{display:grid;grid-template-columns:1fr auto;gap:32px 24px;align-items:start}
+.x-footer nav{display:flex;flex-wrap:wrap;gap:24px}
+.x-footer nav a{color:var(--tx2)}
+.x-footer nav a:hover{color:var(--tx)}
+.x-footer .x-copy{grid-column:1/-1;padding-top:32px;border-top:1px solid var(--ln)}
+/* motion */
+.x-rv{opacity:0;transform:translateY(16px);transition:opacity 1s ease,transform 1s ease}
+.x-rv.is-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.x-rv{opacity:1;transform:none}}
+/* responsive */
+@media (max-width:960px){
+.x-hero__l,.x-hero__r,.x-mint__l,.x-mint__r,.x-head .x-label,.x-head .x-head__t{grid-column:1/-1}
+.x-hero__r{max-width:520px}
+.x-head .x-label{padding-top:0}
+.x-gallery{grid-template-columns:repeat(2,1fr);gap:32px 16px}
+.x-cols{grid-template-columns:1fr}
+.x-cols>div,.x-cols>div+div{padding:32px 0;border-left:0;border-bottom:1px solid var(--ln)}
+.x-cols .x-label{margin-bottom:16px}
+.x-row{grid-template-columns:1fr auto auto;gap:12px 20px}
+.x-row .x-bar,.x-row p{grid-column:1/-1}
+.x-row--h{display:none}
+.x-faq,.x-road{grid-column:1/-1!important}
+}
+@media (max-width:760px){
+:root{--pad:72px;--g:20px}
+.x-menu{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--bg);border-bottom:1px solid var(--ln);padding:8px var(--g) 20px}
+.x-menu.is-open{display:flex}
+.x-menu a{padding:14px 0;border-bottom:1px solid var(--ln);font-size:12px}
+.x-menu .x-xicon{margin-top:16px}
+.x-burger{display:block}
+.x-hero{padding-top:56px}
+.x-data{grid-template-columns:repeat(2,1fr);margin-top:64px}
+.x-data div:nth-child(3){border-left:0}
+.x-data div:nth-child(n+3){border-top:1px solid var(--ln)}
+.x-head{margin-bottom:40px}
+.x-pane{padding:24px 20px}
+.x-steps span{padding:14px 10px;font-size:12px;letter-spacing:.04em}
+.x-task{grid-template-columns:32px 1fr 64px;gap:8px 12px}
+.x-task .x-act{grid-column:2/3;grid-row:2}
+.x-tabs button{padding:0 14px}
+.x-footer .x-wrap{grid-template-columns:1fr}
+.x-faq summary{font-size:22px}
+}
+</style>
+<style id="logo-fix">.x-logo__mark{width:32px;height:32px;border-radius:50%;background:none!important;object-fit:cover}.x-logo__mark::after{display:none!important}.x-foot__brand .x-logo__mark{width:40px;height:40px}</style>
+<style>
+.m-wrap{padding:120px 0 80px}
+.m-top{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+@media(max-width:860px){.m-top{grid-template-columns:1fr}}
+.m-h1{font:400 clamp(40px,6vw,76px)/1 var(--serif);margin:10px 0 16px}
+.m-state{border:1px solid var(--ln);background:var(--sf);padding:28px}
+.m-cd{font:400 clamp(40px,7vw,72px)/1 var(--mono);letter-spacing:.04em;margin:12px 0 6px}
+.m-badge{display:inline-flex;gap:8px;align-items:center;font:400 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--ln);padding:6px 10px}
+.m-badge i{width:8px;height:8px;border-radius:50%;background:#8C8A86}
+.m-badge.is-live i{background:#4FD1E0;box-shadow:0 0 10px #4FD1E0}
+.m-phases{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+.m-ph{border:1px solid var(--ln);padding:18px}
+.m-ph.is-on{border-color:var(--ac)}
+.m-ph.is-done{opacity:.5}
+.m-ph b{display:block;font:400 22px var(--serif);margin:6px 0 4px}
+.m-wait{border:1px dashed var(--ln);padding:28px;color:var(--tx2);text-align:center;font:400 14px/1.6 var(--mono)}
+</style>
+</head>
+<body>
+<header class="x-nav">
+  <div class="x-wrap">
+    <a class="x-logo" href="/"><img class="x-logo__mark" src="/logo-mark.webp" alt="" width="32" height="32"> Autonomous Genesis</a>
+    <nav class="x-menu" id="menu" aria-label="Main">
+      <a href="/#about">About</a><a href="/#collection">Collection</a><a href="/mint" aria-current="page">Mint</a><a href="/#faq">FAQ</a>
+      <a class="x-xicon" href="https://x.com/Autonomousgen" target="_blank" rel="noopener" aria-label="Autonomous Genesis on X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23 22h-6.2l-4.9-6.4L6.3 22H3.2l7.3-8.3L1 2h6.3l4.4 5.9L18.9 2Zm-1.1 18h1.7L6.3 3.9H4.5L17.8 20Z"/></svg></a>
+    </nav>
+    <button class="x-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
+  </div>
+</header>
+<main id="top" class="m-wrap">
+  <div class="x-wrap">
+    <div class="m-top">
+      <div>
+        <p class="x-label">Mint · AI agents only</p>
+        <h1 class="m-h1 x-serif">Autonomous Genesis mint.</h1>
+        <p class="x-muted" style="max-width:520px">2,222 generative neural artworks on BNB Chain. Only AI agent wallets can mint. Copy the live prompt and give it to your agent.</p>
+        <div class="m-phases">
+          <div class="m-ph" id="ph1"><span class="x-label">Phase 1</span><b>Free mint</b><span class="x-mono x-muted">First 500 · 1 per wallet · gas only</span></div>
+          <div class="m-ph" id="ph2"><span class="x-label">Phase 2</span><b>Paid mint</b><span class="x-mono x-muted">0.00022 BNB · up to 5 per wallet</span></div>
+        </div>
+      </div>
+      <div class="m-state">
+        <span class="m-badge" id="badge"><i></i><span id="badgeT">Not live yet</span></span>
+        <div class="m-cd" id="cd">--:--:--</div>
+        <p class="x-mono x-muted" id="cdSub">Opens 2026-10-31 · 18:30 UTC · runs 12h</p>
+        <div class="x-prog" style="margin-top:24px"><p class="x-mono"><span class="x-muted">Minted</span> <span id="mMinted">0</span> / 2,222 <span class="x-muted" id="mFree"></span></p><div class="x-bar"><i id="mBar" style="width:0;transition:width .8s ease"></i></div></div>
+        <dl class="x-spec" style="margin-top:20px">
+          <div><dt>Contract</dt><dd id="caCell">Posted here at mint</dd></div>
+          <div><dt>Chain</dt><dd>BNB Chain (56)</dd></div>
+          <div><dt>Supply</dt><dd>2,222</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="x-agent" id="agent-prompt">
+      <div class="x-agent__h">
+        <div><p class="x-label" id="pLabel">Agent prompt</p><h3 id="pTitle">Prompt unlocks when the mint goes live.</h3></div>
+        <button class="x-btn" id="copyPrompt" type="button" hidden>Copy prompt</button>
+      </div>
+      <div class="m-wait" id="pWait">The mint prompt appears here at 18:30 UTC, for the phase that's live.</div>
+      <pre id="agentPromptText" aria-label="Mint prompt for your AI agent" hidden></pre>
+      <div class="x-agent__f"><span id="agentPromptNote">Paste it into the AI agent that holds your Binance Agent ID wallet.</span><span>The team never DMs. Never share your private key.</span></div>
+    </div>
+  </div>
+</main>
+<footer class="x-footer">
+  <div class="x-wrap">
+    <div>
+      <a class="x-logo" href="/"><img class="x-logo__mark" src="/logo-mark.webp" alt="" width="32" height="32"> Autonomous Genesis</a>
+      <p class="x-muted" style="margin-top:16px;font-size:14px">No token.</p>
+    </div>
+    <nav class="x-label" aria-label="Footer">
+      <a href="/#about">About</a><a href="/#collection">Collection</a><a href="/mint" aria-current="page">Mint</a><a href="/#faq">FAQ</a><a href="https://x.com/Autonomousgen" target="_blank" rel="noopener">X ↗</a>
+    </nav>
+    <p class="x-label x-copy">© 2026 Autonomous Genesis · AUTOG on BNB Chain</p>
+  </div>
+</footer>
+<script>
+(function(){
+var SITE="https://autonomousgenesis.xyz";
+function build(c,id,m){
+var free=m==="free",net=id===97?"BNB Smart Chain Testnet":"BNB Smart Chain (BSC) Mainnet",scan=id===97?"https://testnet.bscscan.com":"https://bscscan.com",ca=c||"Published on "+SITE+" at mint (must match the \"contract\" field in the mint pass)";
+var L="────────────────────────────────────────\n";
+var passUrl=SITE+"/api/mint-pass?wallet=<AGENT_WALLET>"+(free?"":"&type=paid");
+return "AUTONOMOUS GENESIS (AUTOG) · "+(free?"FREE MINT":"PAID MINT")+" · AGENT INSTRUCTIONS\n"+L+
+"ROLE\nYou are my autonomous agent. Mint Autonomous Genesis (AUTOG) for me from your own agent wallet (the wallet linked to my Binance Agent ID). That same wallet must request the pass and send the transaction.\n\n"+
+"COLLECTION\n  Name ........ Autonomous Genesis (AUTOG) · ERC-721\n  Supply ...... 2,222\n  Network ..... "+net+"\n  Chain ID .... "+id+"\n  Contract .... "+ca+"\n  Website ..... "+SITE+"\n  X ........... @Autonomousgen\n\n"+
+"MINT TERMS\n"+(free?
+"  Phase ....... Free mint (first 500 mints only)\n  Cost ........ 0 BNB (gas only)\n  Limit ....... 1 per wallet\n  Function .... wlMint(uint256 deadline, bytes signature)\n  Value ....... 0\n":
+"  Phase ....... Paid mint\n  Price ....... 0.00022 BNB per NFT (220000000000000 wei)\n  Limit ....... Up to 5 per wallet\n  Function .... publicMint(uint256 quantity, uint256 deadline, bytes signature) payable\n  Value ....... quantity × 0.00022 BNB\n")+"\n"+
+"PROCEDURE\n"+
+"  1. Request a mint pass\n     GET "+passUrl+"\n"+
+"  2. Validate the response. Stop and report if any check fails:\n     • \"eligible\" is true (otherwise report the \"reason\")\n     • \"chainId\" equals "+id+"\n     • \"contract\" equals "+(c||"the address published on "+SITE)+"\n     • \"type\" equals \""+(free?"FREE":"PUBLIC")+"\""+(free?" (anything else means the free mints are gone or this wallet already claimed one: do not pay)":"")+"\n"+
+"  3. Send one transaction within 15 minutes (the pass expires):\n     "+(free?"wlMint(deadline, signature) with value 0":"publicMint(quantity, deadline, signature) with value = quantity × 0.00022 BNB\n     Use quantity 1 unless I specify up to 5")+"\n     Use \"deadline\" and \"signature\" exactly as returned.\n"+
+"  4. On failure or expiry, request a fresh pass and retry once. Then stop and report.\n\n"+
+"REPORT BACK\n  • Status: minted / not minted\n  • Transaction hash and link: "+scan+"/tx/<hash>\n  • Token ID(s), if available\n  • The exact error or \"reason\", if it failed\n\n"+
+"SECURITY RULES\n  • Interact only with the contract above. Never send BNB anywhere else.\n  • Never share or request a private key or seed phrase.\n  • There is no AUTOG token. The team never DMs.\n"+L+"End of instructions.";}
+
+function $(i){return document.getElementById(i)}
+function pad(n){return("0"+n).slice(-2)}
+function hm(t){var d=new Date(t*1000);return pad(d.getUTCHours())+":"+pad(d.getUTCMinutes())+" UTC"}
+var D=null,target=0,mode=null;
+function setPrompt(m,c,id){
+  if(m===mode)return;mode=m;var pre=$("agentPromptText"),btn=$("copyPrompt"),w=$("pWait");
+  if(!m){pre.hidden=true;btn.hidden=true;w.hidden=false;return}
+  pre.textContent=build(c,id,m);pre.hidden=false;btn.hidden=false;w.hidden=true;
+  $("pLabel").textContent=m==="free"?"Live · Phase 1 · Free mint":"Live · Phase 2 · Paid mint";
+  $("pTitle").textContent=m==="free"?"Free mint prompt. First 500, 1 per wallet.":"Paid mint prompt. 0.00022 BNB, up to 5 per wallet.";
+}
+function tick(){
+  if(!target)return;var r=Math.max(0,target-Math.floor(Date.now()/1000));
+  $("cd").textContent=pad(Math.floor(r/3600))+":"+pad(Math.floor(r%3600/60))+":"+pad(r%60);
+  if(r===0){target=0;setTimeout(poll,1500)}
+}
+function render(d){
+  var c=d.contract,id=d.chainId||56,cap=d.freeCap||500,fm=d.freeMinted||0,left=Math.max(0,cap-fm),out=d.freeCap!=null&&left===0;
+  if(c){var cc=$("caCell");if(!cc.getAttribute("data-set")){cc.setAttribute("data-set","1");cc.innerHTML="";var a=document.createElement("a");a.className="x-link";a.target="_blank";a.rel="noopener";a.href="https://bscscan.com/address/"+c;a.textContent=c.slice(0,6)+"…"+c.slice(-4)+" ↗";cc.appendChild(a)}}
+  var b=$("badge"),bt=$("badgeT"),p1=$("ph1"),p2=$("ph2");p1.className="m-ph";p2.className="m-ph";
+  if(d.phase==="ended"){b.className="m-badge";bt.textContent="Mint ended";target=0;$("cd").textContent="Ended";$("cdSub").textContent="Thanks for minting. Reveal comes next.";p1.className="m-ph is-done";p2.className="m-ph is-done";setPrompt(null);$("pTitle").textContent="Mint has ended.";$("pWait").textContent="The mint is closed.";return}
+  if(d.phase!=="public"){b.className="m-badge";bt.textContent="Not live yet";if(d.startsAt){target=d.startsAt;tick();$("cdSub").textContent="Opens "+new Date(d.startsAt*1000).toISOString().slice(0,10)+" · "+hm(d.startsAt)+" · runs 12h"}setPrompt(null);return}
+  b.className="m-badge is-live";
+  if(out){bt.textContent="Live · Paid mint";p1.className="m-ph is-done";p2.className="m-ph is-on";$("mFree").textContent="· free 500 sold out"}
+  else{bt.textContent="Live · Free mint";p1.className="m-ph is-on";$("mFree").textContent="· "+left+" free left"}
+  if(d.endsAt){target=d.endsAt;tick();$("cdSub").textContent="Time left · ends "+hm(d.endsAt)}
+  setPrompt(out?"paid":"free",c,id);
+}
+function poll(){fetch("/api/mint-info",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){D=d;render(d)}).catch(function(){});
+  fetch("/api/supply",{cache:"no-store"}).then(function(r){return r.json()}).then(function(s){if(typeof s.minted==="number"){$("mMinted").textContent=s.minted.toLocaleString("en-US");$("mBar").style.width=Math.min(100,s.minted/2222*100)+"%"}}).catch(function(){})}
+poll();setInterval(poll,15000);setInterval(tick,1000);
+var btn=$("copyPrompt");btn.onclick=function(){var t=$("agentPromptText").textContent;function ok(){btn.textContent="Copied";setTimeout(function(){btn.textContent="Copy prompt"},1800)}
+if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else fb();
+function fb(){var a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();try{document.execCommand("copy");ok()}catch(e){}a.remove()}};
+var bg=$("burger"),mn=$("menu");if(bg&&mn)bg.onclick=function(){var o=mn.classList.toggle("is-open");bg.setAttribute("aria-expanded",o?"true":"false")};
+})();
+</script>
+</body>
+</html>

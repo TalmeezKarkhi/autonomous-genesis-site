@@ -263,7 +263,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
   <div class="x-wrap">
     <a class="x-logo" href="#top"><img class="x-logo__mark" src="logo-mark.webp" alt="" width="32" height="32"> Autonomous Genesis</a>
     <nav class="x-menu" id="menu" aria-label="Main">
-      <a href="#about">About</a><a href="#collection">Collection</a><a href="#mint">Mint</a><a href="#faq">FAQ</a>
+      <a href="#about">About</a><a href="#collection">Collection</a><a href="/mint">Mint</a><a href="#faq">FAQ</a>
       <a class="x-xicon" href="https://x.com/Autonomousgen" target="_blank" rel="noopener" aria-label="Autonomous Genesis on X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23 22h-6.2l-4.9-6.4L6.3 22H3.2l7.3-8.3L1 2h6.3l4.4 5.9L18.9 2Zm-1.1 18h1.7L6.3 3.9H4.5L17.8 20Z"/></svg></a>
     </nav>
     <button class="x-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
@@ -279,7 +279,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
           <h1 class="x-serif">Art made by machines. Minted only by AI.</h1>
           <p class="x-hero__sub">2,222 generative neural artworks on BNB Chain. Minted by AI agent wallets: first 500 mint free, then 0.00022 BNB, up to 5 per wallet.</p>
           <div class="x-btns">
-            <a class="x-btn" id="heroCta" href="#mint">Mint details</a>
+            <a class="x-btn" id="heroCta" href="/mint">Mint page</a>
             <a class="x-btn x-btn--line" href="#collection">View collection</a>
           </div>
           <a class="x-hero__follow x-link" href="https://x.com/Autonomousgen" target="_blank" rel="noopener">Follow @Autonomousgen ↗</a>
@@ -373,10 +373,10 @@ p.x-muted,.x-muted{color:var(--tx2)}
             <div><dt>Trading</dt><dd>Element, after mint</dd></div>
           </dl>
           <div class="x-prog"><p class="x-mono"><span class="x-muted">Minted</span> <span id="mintCount">0</span> / 2,222 <span class="x-muted" id="mintLive"></span></p><div class="x-bar"><i id="mintBar" style="width:0;transition:width .8s ease"></i></div></div>
-          <button class="x-btn" id="mintBtn" disabled>Mint opens at 18:30 UTC</button>
+          <button class="x-btn" id="mintBtn" onclick="location.href='/mint'">Mint opens at 18:30 UTC</button> <a class="x-btn x-btn--line" href="/mint">Open mint page</a>
         </div>
       </div>
-      <div class="x-agent x-rv" id="agent-prompt">
+      <div class="x-agent" id="agent-prompt" hidden style="display:none">
         <div class="x-agent__h">
           <div><p class="x-label">Mint with your agent</p><h3>Copy. Paste. Your agent mints.</h3></div>
           <button class="x-btn" id="copyPrompt" type="button">Copy prompt</button>
@@ -495,7 +495,7 @@ i.oninput=function(){fd.classList.remove("is-bad")}})();
       <p class="x-muted" style="margin-top:16px;font-size:14px">No token.</p>
     </div>
     <nav class="x-label" aria-label="Footer">
-      <a href="#about">About</a><a href="#collection">Collection</a><a href="#mint">Mint</a><a href="#faq">FAQ</a><a href="https://x.com/Autonomousgen" target="_blank" rel="noopener">X ↗</a>
+      <a href="#about">About</a><a href="#collection">Collection</a><a href="/mint">Mint</a><a href="#faq">FAQ</a><a href="https://x.com/Autonomousgen" target="_blank" rel="noopener">X ↗</a>
     </nav>
     <p class="x-label x-copy">© 2026 Autonomous Genesis · AUTOG on BNB Chain</p>
   </div>
@@ -687,9 +687,9 @@ if(ph==="ended"){T("mintStatus","Mint ended");var mb0=document.getElementById("m
 if(ph==="off"&&d.startsAt&&d.startsAt*1000>Date.now()){T("mintStatus","Opens "+new Date(d.startsAt*1000).toISOString().slice(0,10)+" "+hm(d.startsAt)+" · 12h · first 500 free");startCd(d.startsAt);return}stopCd();
 if(!/^(wl|public|both)$/.test(ph))return;
 var lbl=FREE_OUT?"Live · Free sold out · 0.00022 BNB, up to 5 per wallet":"Live · First 500 FREE · "+left+" free left";if(d.endsAt)lbl+=" · ends "+hm(d.endsAt);
-var h=document.getElementById("heroCta");if(h){h.textContent=FREE_OUT?"Mint now · 0.00022 BNB":"Mint free now";h.setAttribute("href","#agent-prompt")}
+var h=document.getElementById("heroCta");if(h){h.textContent=FREE_OUT?"Mint now · 0.00022 BNB":"Mint free now";h.setAttribute("href","/mint")}
 T("mintStatus",lbl);var hs=document.getElementById("heroStatus");if(hs)hs.textContent=FREE_OUT?"Mint live · 0.00022 BNB · up to 5 per wallet":"Mint live · first 500 free · "+left+" left";
-var mb=document.getElementById("mintBtn");if(mb){mb.disabled=false;mb.textContent=FREE_OUT?"Mint with your agent · 0.00022 BNB":"Mint free with your agent";mb.onclick=function(){document.getElementById("agent-prompt").scrollIntoView({behavior:"smooth"})}}}
+var mb=document.getElementById("mintBtn");if(mb){mb.disabled=false;mb.textContent=FREE_OUT?"Mint with your agent · 0.00022 BNB":"Mint free with your agent";mb.onclick=function(){location.href="/mint"}}}
 function poll(){fetch("/api/mint-info",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){CID=d.chainId||56;CA=d.contract;live(d.phase,d)}).catch(function(){})}
 poll();setInterval(poll,20000);
 btn.onclick=function(){var t=pre.textContent;function ok(){btn.textContent="Copied";setTimeout(function(){btn.textContent="Copy prompt"},1800)}
