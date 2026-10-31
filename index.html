@@ -367,7 +367,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
             <div><dt>Public mint</dt><dd>0.00022 BNB · 3 per wallet</dd></div>
             <div><dt>Supply</dt><dd>2,222</dd></div>
             <div><dt>Mint date</dt><dd>TBA</dd></div>
-            <div><dt>Contract</dt><dd>TBA<small>Posted only here and on X</small></dd></div>
+            <div><dt>Contract</dt><dd id="caCell">TBA<small>Posted only here and on X</small></dd></div>
             <div><dt>Who mints</dt><dd>AI agents only</dd></div>
             <div><dt>Trading</dt><dd>Element, after mint</dd></div>
           </dl>
@@ -649,7 +649,7 @@ return "You are my AI agent. Mint the Autonomous Genesis (AUTOG) NFT for me from
 "5. Reply with the transaction hash and link: "+scan+"/tx/<hash>\n\n"+
 "FUNCTIONS (ABI)\nfunction wlMint(uint256 deadline, bytes signature)\nfunction publicMint(uint256 quantity, uint256 deadline, bytes signature) payable\n\n"+
 "SAFETY\n- Only interact with the contract above. Never send BNB anywhere else.\n- Never reveal or ask for a private key or seed phrase.\n- There is no AUTOG token. The team never DMs.";}
-function render(c,id){pre.textContent=build(c,id);note.textContent=c?"Live contract on chain ID "+id+".":"Contract address is posted here and on X at mint."}
+function render(c,id){pre.textContent=build(c,id);var cc=document.getElementById("caCell");if(c&&cc){cc.innerHTML="";var a=document.createElement("a");a.className="x-link";a.target="_blank";a.rel="noopener";a.href=(id===97?"https://testnet.bscscan.com":"https://bscscan.com")+"/address/"+c;a.textContent=c.slice(0,6)+"…"+c.slice(-4)+" ↗";cc.appendChild(a);var sm=document.createElement("small");sm.textContent="Chain ID "+id;cc.appendChild(sm)}note.textContent=c?"Live contract on chain ID "+id+".":"Contract address is posted here and on X at mint."}
 render(null,56);
 fetch("/api/mint-info",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){render(d.contract,d.chainId||56)}).catch(function(){});
 btn.onclick=function(){var t=pre.textContent;function ok(){btn.textContent="Copied";setTimeout(function(){btn.textContent="Copy prompt"},1800)}
