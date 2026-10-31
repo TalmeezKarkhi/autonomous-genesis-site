@@ -405,7 +405,7 @@ function render(d){
   if(d.endsAt){target=d.endsAt;tick();$("cdSub").textContent="Time left · ends "+hm(d.endsAt)}
   if(d.mode!=="free"&&d.mode!=="paid"){if(d.mode===undefined&&!LAST)return;b.className="m-badge";bt.textContent="Paused";setPrompt(null);$("pTitle").textContent="Mint is paused for a moment.";$("pWait").textContent="Hold tight. This page refreshes on its own. Updates on x.com/Autonomousgen.";return}
   b.className="m-badge is-live";
-  if(d.mode==="paid"){bt.textContent="Live · Paid mint";p1.className="m-ph is-done";p2.className="m-ph is-on";$("mFree").textContent="Free 500 claimed · paid mint live"}
+  if(d.mode==="paid"){bt.textContent="Live · Paid mint";p1.className="m-ph is-done";p2.className="m-ph is-on";$("mFree").textContent="Free claimed · paid mint live"}
   else{bt.textContent="Live · Free mint";p1.className="m-ph is-on";$("mFree").textContent=left+" of "+cap+" free left"}
   setPrompt(d.mode,c,id);
 }
