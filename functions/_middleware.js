@@ -5,8 +5,16 @@ function same(a, b) {
   let d = 0; for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return d === 0;
 }
+const CANON = "autonomousgenesis.xyz";
+const ALIASES = ["www.autonomousgenesis.xyz", "autonomousgenesis.pages.dev"];
 export async function onRequest({ request, env, next }) {
-  const path = new URL(request.url).pathname;
+  const url = new URL(request.url);
+  const path = url.pathname;
+  // Send visitors on www and pages.dev to the main domain (pages only; API calls keep working on any host).
+  if (ALIASES.includes(url.hostname) && (request.method === "GET" || request.method === "HEAD") && !path.startsWith("/api/")) {
+    url.hostname = CANON; url.protocol = "https:"; url.port = "";
+    return Response.redirect(url.toString(), 301);
+  }
   if (!/^\/(admin|deploy)(\/|$)/.test(path)) return next();
   const pass = env.ADMIN_PASSWORD || env.ADMIN_KEY;
   const deny = () => new Response("Password required", {
