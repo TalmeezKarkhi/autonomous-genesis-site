@@ -3,6 +3,7 @@
 // MINT_PHASE = off | wl | public | both. Until these are set it answers "not live".
 import { ensure, json } from "./_db.js";
 import { signMintPass } from "./_sign.js";
+import { ethCall, addrArg } from "./_chain.js";
 
 const PRICE_BNB = "0.00022";
 const PASS_MINUTES = 15;
@@ -19,12 +20,21 @@ export async function onRequestGet({ request, env }) {
   const base = { eligible: true, contract: env.CONTRACT_ADDRESS, chainId: Number(env.CHAIN_ID), wallet, deadline,
                  validUntilUTC: new Date(deadline * 1000).toISOString().replace(".000Z", " UTC") };
 
-  if (phase === "wl" || phase === "both") {
+  const wantPublic = (url.searchParams.get("type") || "").toLowerCase() === "public";
+  if ((phase === "wl" || phase === "both") && !(phase === "both" && wantPublic)) {
     let approved = false;
     if (env.DB) {
       await ensure(env.DB);
       const row = await env.DB.prepare("SELECT status FROM wl_entries WHERE lower(agent_address)=lower(?)").bind(wallet).first();
       approved = !!row && row.status === "approved";
+    }
+    if (approved) {
+      // already used the free WL mint? (freeMintedBy(address))
+      const used = await ethCall(env.CHAIN_ID, env.CONTRACT_ADDRESS, "0xdd4d2233" + addrArg(wallet));
+      if (used && parseInt(used, 16) >= 1) {
+        if (phase === "wl") return json({ eligible: false, reason: "This wallet already used its free WL mint. Public mint opens later." });
+        approved = false; // phase both: fall through to a public pass
+      }
     }
     if (approved) {
       const signature = signMintPass(env.SIGNER_KEY, env.CHAIN_ID, env.CONTRACT_ADDRESS, wallet, 1, deadline);
