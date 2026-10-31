@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>AUTOG · Contract Deployer</title>
+<link rel="icon" href="/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#0B0B0C;--sf:#111113;--ln:#232326;--tx:#ECE8E1;--tx2:#8C8A86;--ac:#4FD1E0;--ok:#B6FF3B;--bad:#d98a7e;--warn:#D9B45A;--serif:"Instrument Serif",Georgia,serif;--sans:Inter,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font:400 15px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--ac)}
+.w{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+.lbl{font:400 12px/1.6 var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--tx2)}
+h1{font:400 clamp(40px,7vw,64px)/1.02 var(--serif);margin:12px 0 12px}
+h2{font:400 30px/1.1 var(--serif);margin-bottom:6px}
+.sub{color:var(--tx2);max-width:560px}
+.box{border:1px solid var(--ln);background:var(--sf);padding:28px;margin-top:24px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 20px;border-radius:2px;font:500 12px/1 var(--mono);text-transform:uppercase;letter-spacing:.12em;border:1px solid var(--tx);background:var(--tx);color:var(--bg);cursor:pointer}
+.btn:hover{background:transparent;color:var(--tx)}
+.btn.line{background:transparent;color:var(--tx);border-color:var(--ln)}
+.btn.line:hover{border-color:var(--tx)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.seg{display:flex;border:1px solid var(--ln);width:max-content;max-width:100%}
+.seg button{min-height:46px;padding:0 18px;font:400 12px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--tx2);background:none;border:0;border-left:1px solid var(--ln);cursor:pointer}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed=true]{background:var(--tx);color:var(--bg)}
+.f{margin-top:20px}
+.f label{display:block;margin-bottom:8px}
+.f input{width:100%;min-height:46px;padding:0 14px;background:var(--bg);border:1px solid var(--ln);border-radius:2px;color:var(--tx);font:400 14px var(--mono)}
+.f input:focus{outline:0;border-color:var(--tx2)}
+.f input[readonly]{color:var(--tx2)}
+.f small{display:block;margin-top:6px;color:var(--tx2);font-size:13px}
+.f.bad input{border-color:var(--bad)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}.box{padding:20px}}
+.kv{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--ln);font:400 13px var(--mono);word-break:break-all}
+.kv span:first-child{color:var(--tx2);white-space:nowrap;word-break:normal}
+.st{margin-top:16px;font:400 13px/1.7 var(--mono);color:var(--tx2);white-space:pre-wrap;word-break:break-all}
+.st .ok{color:var(--ok)}.st .bad{color:var(--bad)}
+.warn{border-left:2px solid var(--warn);padding:10px 14px;margin-top:16px;color:var(--tx);font-size:14px;background:rgba(217,180,90,.06)}
+.secret{border:1px solid var(--warn);padding:16px;margin-top:16px;font:400 13px var(--mono);word-break:break-all}
+ol.steps{margin:12px 0 0 20px;color:var(--tx2)}
+ol.steps li{margin:8px 0}
+ol.steps b{color:var(--tx);font-weight:500}
+code{font:400 13px var(--mono);color:var(--tx);background:var(--bg);padding:1px 6px;border:1px solid var(--ln)}
+.chk{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:14px}
+.chk input{margin-top:4px;width:18px;height:18px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="w">
+  <p class="lbl">Autonomous Genesis · Private tool</p>
+  <h1>Contract deployer.</h1>
+  <p class="sub">Connect your deployer wallet, pick the network, fill the settings and deploy. Your wallet signs everything; nothing is stored on any server. Test on BSC Testnet first.</p>
+
+  <!-- 1 network + wallet -->
+  <div class="box">
+    <p class="lbl">01 · Network and wallet</p>
+    <div class="row" style="margin-top:14px">
+      <div class="seg" id="net"><button data-n="97" aria-pressed="true">BSC Testnet (97)</button><button data-n="56" aria-pressed="false">BNB Mainnet (56)</button></div>
+    </div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn" id="connect">Connect wallet</button>
+      <span class="lbl" id="who">Not connected</span>
+    </div>
+    <div id="wallets" class="row" style="margin-top:12px"></div>
+    <div class="st" id="netst"></div>
+  </div>
+
+  <!-- 2 settings -->
+  <div class="box">
+    <p class="lbl">02 · Contract settings</p>
+    <div class="grid2">
+      <div class="f" id="fAdmin"><label class="lbl" for="admin">Admin wallet (owner)</label><input id="admin" placeholder="0x…" spellcheck="false"><small>Controls phases, price, reveal, withdraw. Defaults to your connected wallet.</small></div>
+      <div class="f" id="fRoy"><label class="lbl" for="roy">Royalty receiver</label><input id="roy" placeholder="0x…" spellcheck="false"><small>Gets the 5% resale royalty.</small></div>
+    </div>
+    <div class="f" id="fSigner"><label class="lbl" for="signer">Mint-pass signer address</label><input id="signer" placeholder="0x…" spellcheck="false">
+      <small>The website signs mint passes with this key. Use a fresh one, never your main wallet.</small>
+      <div class="row" style="margin-top:10px"><button class="btn line" id="gen" type="button">Generate new signer</button></div>
+      <div class="secret" id="secret" hidden>
+        <p class="lbl" style="color:var(--warn)">Save this now. It is shown once.</p>
+        <p style="margin-top:10px">SIGNER address: <span id="sAddr"></span></p>
+        <p style="margin-top:6px">SIGNER_KEY: <span id="sKey"></span></p>
+        <div class="row" style="margin-top:12px"><button class="btn line" id="copyKey" type="button">Copy SIGNER_KEY</button></div>
+        <p style="margin-top:12px;color:var(--tx2)">Put SIGNER_KEY in Cloudflare Pages as an encrypted variable (Hark can do that for you). Never share it or post it anywhere.</p>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="f" id="fCap"><label class="lbl" for="cap">WL mint cap (private)</label><input id="cap" inputmode="numeric" placeholder="e.g. 300"><small>Total free WL mints. Never shown on the site.</small></div>
+      <div class="f" id="fSub"><label class="lbl" for="sub">Chainlink VRF subscription ID</label><input id="sub" inputmode="numeric" placeholder="long number from vrf.chain.link"><small>Create it at <a href="https://vrf.chain.link" target="_blank" rel="noopener">vrf.chain.link</a> on the same network.</small></div>
+    </div>
+    <div class="f" id="fHidden"><label class="lbl" for="hidden">Hidden (Vault) metadata URI</label><input id="hidden" placeholder="ipfs://<CID>/hidden.json" spellcheck="false"><small>The sealed Vault metadata every token shows until reveal. Can be changed later with setHiddenURI.</small></div>
+    <div class="grid2">
+      <div class="f"><label class="lbl">VRF coordinator (auto)</label><input id="coord" readonly></div>
+      <div class="f"><label class="lbl">VRF key hash (auto)</label><input id="kh" readonly></div>
+    </div>
+    <div class="f"><label class="lbl">Fixed in the contract</label>
+      <small>Supply 2,222 · WL free, 1 per wallet · Public 0.00022 BNB, 3 per wallet · Royalty 5% · Mint phases start OFF</small></div>
+  </div>
+
+  <!-- 3 deploy -->
+  <div class="box">
+    <p class="lbl">03 · Deploy</p>
+    <label class="chk" id="mainChk" hidden><input type="checkbox" id="tested"> <span>I tested this contract on BSC Testnet and I am ready to deploy on BNB Mainnet with real BNB.</span></label>
+    <div class="row" style="margin-top:16px"><button class="btn" id="deploy" disabled>Deploy contract</button></div>
+    <div class="st" id="dst"></div>
+  </div>
+
+  <!-- 4 result + verify -->
+  <div class="box" id="result" hidden>
+    <p class="lbl">04 · Deployed</p>
+    <h2 style="margin-top:8px">Contract is live.</h2>
+    <div id="kv" style="margin-top:12px"></div>
+    <div class="row" style="margin-top:16px">
+      <a class="btn" id="scan" target="_blank" rel="noopener">Open on BscScan</a>
+      <a class="btn line" id="verifyLink" target="_blank" rel="noopener">Verify on BscScan</a>
+    </div>
+    <h2 style="margin-top:32px;font-size:24px">Verify the code on BscScan</h2>
+    <ol class="steps">
+      <li>Open <b>Verify on BscScan</b>. Compiler type: <b>Solidity (Standard-Json-Input)</b>. Compiler: <b>v0.8.24+commit.e11b9ed9</b>. License: <b>MIT</b>.</li>
+      <li>Upload this file: <a href="autog-standard-input.json" download>autog-standard-input.json</a></li>
+      <li>Constructor arguments (ABI-encoded), if asked: <div class="row" style="margin-top:8px"><button class="btn line" id="copyArgs" type="button">Copy constructor args</button></div></li>
+    </ol>
+    <h2 style="margin-top:32px;font-size:24px">Then</h2>
+    <ol class="steps">
+      <li>At <a href="https://vrf.chain.link" target="_blank" rel="noopener">vrf.chain.link</a>, open your subscription and <b>Add consumer</b> → paste the contract address. Fund it with BNB.</li>
+      <li>Send Hark the contract address and network. Hark sets CONTRACT_ADDRESS, CHAIN_ID, SIGNER_KEY and MINT_PHASE on the website.</li>
+      <li>On BscScan → Write Contract → connect admin wallet → <code>setPhases(true,false)</code> opens WL. <code>setPhases(false,true)</code> opens public. <code>setPhases(false,false)</code> closes mint.</li>
+    </ol>
+  </div>
+
+  <p class="lbl" style="margin-top:32px">All times are UTC · Not audited · Use at your own risk</p>
+</div>
+
+<script src="ethers.umd.min.js"></script>
+<script src="artifact.js"></script>
+<script>
+(function(){
+  var E = window.ethers, A = window.AUTOG_ARTIFACT;
+  var NETS = {
+    97: {name:"BSC Testnet", hex:"0x61", rpc:"https://data-seed-prebsc-1-s1.bnbchain.org:8545", scan:"https://testnet.bscscan.com", sym:"tBNB",
+         coord:"0xDA3b641D438362C440Ac5458c57e00a712b66700", kh:"0x8596b430971ac45bdf6088665b9ad8e8630c9d5049ab54b14dff711bee7c0e26"},
+    56: {name:"BNB Smart Chain Mainnet", hex:"0x38", rpc:"https://bsc-dataseed.bnbchain.org", scan:"https://bscscan.com", sym:"BNB",
+         coord:"0xd691f04bc0C9a24Edb78af9E005Cf85768F694C9", kh:"0x130dba50ad435d4ecc214aad0d5820474137bd68e7e77724144f27c3c377d3d4"}
+  };
+  var $ = function(i){return document.getElementById(i)};
+  var chain = 97, eth = null, account = null, providers = [], lastArgs = "";
+
+  // EIP-6963 wallet discovery (MetaMask, Binance Wallet, Trust, OKX...)
+  window.addEventListener("eip6963:announceProvider", function(e){
+    if (providers.some(function(p){return p.info.uuid===e.detail.info.uuid})) return;
+    providers.push(e.detail);
+  });
+  window.dispatchEvent(new Event("eip6963:requestProvider"));
+
+  function setNet(n){
+    chain = n;
+    [].forEach.call(document.querySelectorAll("#net button"), function(b){b.setAttribute("aria-pressed", b.dataset.n==String(n))});
+    $("coord").value = NETS[n].coord; $("kh").value = NETS[n].kh;
+    $("mainChk").hidden = n !== 56;
+    $("deploy").textContent = "Deploy on " + (n===56 ? "Mainnet" : "Testnet");
+    refresh();
+  }
+  [].forEach.call(document.querySelectorAll("#net button"), function(b){b.onclick = function(){setNet(Number(b.dataset.n)); if (eth) switchChain()}});
+
+  function msg(id, html){$(id).innerHTML = html}
+  function short(a){return a.slice(0,6)+"…"+a.slice(-4)}
+
+  $("connect").onclick = function(){
+    if (providers.length > 1) {
+      var w = $("wallets"); w.innerHTML = "";
+      providers.forEach(function(p){var b = document.createElement("button"); b.className = "btn line"; b.textContent = p.info.name; b.onclick = function(){w.innerHTML=""; use(p.provider)}; w.appendChild(b)});
+      return;
+    }
+    var p = providers[0] ? providers[0].provider : (window.ethereum || (window.BinanceChain) || null);
+    if (!p) return msg("netst", "<span class='bad'>No wallet found. Open this page in a browser with MetaMask, Binance Web3 Wallet or Trust Wallet.</span>");
+    use(p);
+  };
+
+  function use(p){
+    eth = p;
+    eth.request({method:"eth_requestAccounts"}).then(function(acc){
+      account = E.getAddress(acc[0]);
+      $("who").textContent = "Connected " + short(account);
+      $("connect").textContent = "Connected";
+      if (!$("admin").value) $("admin").value = account;
+      if (!$("roy").value) $("roy").value = account;
+      if (eth.on) { eth.on("accountsChanged", function(a){account = a[0] ? E.getAddress(a[0]) : null; $("who").textContent = account ? "Connected " + short(account) : "Not connected"; refresh()});
+                    eth.on("chainChanged", function(){refresh()}); }
+      return switchChain();
+    }).catch(function(e){msg("netst", "<span class='bad'>"+(e.message||e)+"</span>")});
+  }
+
+  function switchChain(){
+    var n = NETS[chain];
+    return eth.request({method:"wallet_switchEthereumChain", params:[{chainId:n.hex}]}).catch(function(e){
+      if (e && (e.code===4902 || /Unrecognized|not added/i.test(e.message||"")))
+        return eth.request({method:"wallet_addEthereumChain", params:[{chainId:n.hex, chainName:n.name, rpcUrls:[n.rpc], blockExplorerUrls:[n.scan], nativeCurrency:{name:"BNB", symbol:n.sym, decimals:18}}]});
+      throw e;
+    }).then(refresh).catch(function(e){msg("netst", "<span class='bad'>Switch to "+n.name+" in your wallet. "+(e.message||"")+"</span>")});
+  }
+
+  function refresh(){
+    if (!eth || !account) { $("deploy").disabled = true; return; }
+    var bp = new E.BrowserProvider(eth);
+    Promise.all([bp.getNetwork(), bp.getBalance(account)]).then(function(r){
+      var id = Number(r[0].chainId), ok = id === chain;
+      msg("netst", ok ? "<span class='ok'>On "+NETS[chain].name+"</span> · Balance "+Number(E.formatEther(r[1])).toFixed(5)+" "+NETS[chain].sym
+                      : "<span class='bad'>Wallet is on chain "+id+". Switch to "+NETS[chain].name+".</span>");
+      $("deploy").disabled = !ok || (chain===56 && !$("tested").checked);
+    }).catch(function(){});
+  }
+  $("tested").onchange = refresh;
+
+  // signer generator (runs only in your browser)
+  $("gen").onclick = function(){
+    var w = E.Wallet.createRandom();
+    $("signer").value = w.address; $("sAddr").textContent = w.address; $("sKey").textContent = w.privateKey;
+    $("secret").hidden = false;
+  };
+  $("copyKey").onclick = function(){navigator.clipboard.writeText($("sKey").textContent); this.textContent = "Copied"};
+
+  function val(){
+    var bad = false;
+    function chk(fid, ok){document.getElementById(fid).classList.toggle("bad", !ok); if(!ok) bad = true}
+    var admin = $("admin").value.trim(), roy = $("roy").value.trim(), signer = $("signer").value.trim(),
+        cap = $("cap").value.trim(), sub = $("sub").value.trim(), hidden = $("hidden").value.trim();
+    chk("fAdmin", E.isAddress(admin)); chk("fRoy", E.isAddress(roy)); chk("fSigner", E.isAddress(signer) && (!account || signer.toLowerCase() !== account.toLowerCase()));
+    chk("fCap", /^\d+$/.test(cap) && Number(cap) > 0 && Number(cap) <= 2222);
+    chk("fSub", /^\d+$/.test(sub)); chk("fHidden", /^ipfs:\/\/.+\.json$/.test(hidden));
+    if (bad) return null;
+    return [E.getAddress(admin), E.getAddress(signer), hidden, BigInt(cap), NETS[chain].coord, BigInt(sub), NETS[chain].kh, E.getAddress(roy), 500];
+  }
+
+  $("deploy").onclick = function(){
+    var args = val();
+    if (!args) return msg("dst", "<span class='bad'>Fix the highlighted fields. The signer must be a different wallet from the one you deploy with.</span>");
+    var btn = this; btn.disabled = true;
+    msg("dst", "Confirm the deployment in your wallet…");
+    var bp = new E.BrowserProvider(eth);
+    bp.getSigner().then(function(s){
+      var f = new E.ContractFactory(A.abi, A.bytecode, s);
+      lastArgs = f.interface.encodeDeploy(args).slice(2);
+      return f.deploy.apply(f, args);
+    }).then(function(c){
+      var tx = c.deploymentTransaction();
+      msg("dst", "Sent. Waiting for confirmation…\nTx: <a target='_blank' rel='noopener' href='"+NETS[chain].scan+"/tx/"+tx.hash+"'>"+tx.hash+"</a>");
+      return c.waitForDeployment().then(function(){return c.getAddress()}).then(function(addr){done(addr, tx.hash, args)});
+    }).catch(function(e){
+      btn.disabled = false;
+      msg("dst", "<span class='bad'>"+((e && (e.shortMessage||e.message))||e)+"</span>");
+    });
+  };
+
+  function done(addr, hash, args){
+    var n = NETS[chain], when = new Date().toISOString().replace("T"," ").slice(0,16) + " UTC";
+    msg("dst", "<span class='ok'>Deployed.</span>");
+    $("result").hidden = false;
+    var rows = [["Network", n.name+" ("+chain+")"],["Contract", addr],["Tx", hash],["Admin", args[0]],["Signer", args[1]],["Deployed", when]];
+    $("kv").innerHTML = rows.map(function(r){return "<div class='kv'><span>"+r[0]+"</span><span>"+r[1]+"</span></div>"}).join("");
+    $("scan").href = n.scan + "/address/" + addr;
+    $("verifyLink").href = n.scan + "/verifyContract?a=" + addr;
+    try { localStorage.setItem("autog-deploy-"+chain, JSON.stringify({addr:addr, hash:hash, when:when, args:lastArgs})) } catch(e){}
+    $("result").scrollIntoView({behavior:"smooth"});
+  }
+  $("copyArgs").onclick = function(){navigator.clipboard.writeText(lastArgs); this.textContent = "Copied"};
+
+  // restore a previous deployment on this device
+  function restore(){
+    try { var d = JSON.parse(localStorage.getItem("autog-deploy-"+chain) || "null"); if (!d) return;
+      lastArgs = d.args || ""; msg("dst", "Previous "+NETS[chain].name+" deployment on this device: <a target='_blank' rel='noopener' href='"+NETS[chain].scan+"/address/"+d.addr+"'>"+d.addr+"</a> ("+d.when+")"); } catch(e){}
+  }
+  var _set = setNet; setNet = function(n){_set(n); restore()};
+  setNet(97);
+})();
+</script>
+</body>
+</html>

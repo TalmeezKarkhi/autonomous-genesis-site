@@ -4,3 +4,7 @@
   X-Frame-Options: DENY
 /functions/*
   X-Robots-Tag: noindex
+/deploy/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+  X-Frame-Options: DENY

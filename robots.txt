@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
+Disallow: /deploy/
 
 Sitemap: https://autonomousgenesis.pages.dev/sitemap.xml
