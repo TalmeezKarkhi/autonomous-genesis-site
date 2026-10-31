@@ -6,7 +6,7 @@ function same(a, b) {
   return d === 0;
 }
 const CANON = "autonomousgenesis.xyz";
-const ALIASES = ["www.autonomousgenesis.xyz", "autonomousgenesis.pages.dev"];
+const ALIASES = []; // paused 2026-10-31: some ISPs still cache the old empty answer for the bare domain. Re-enable: ["www.autonomousgenesis.xyz", "autonomousgenesis.pages.dev"]
 export async function onRequest({ request, env, next }) {
   const url = new URL(request.url);
   const path = url.pathname;
