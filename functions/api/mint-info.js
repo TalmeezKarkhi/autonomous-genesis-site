@@ -11,6 +11,9 @@ export async function onRequestGet({ env }) {
   let signer = null, contractSigner = null;
   try { if (env.SIGNER_KEY) signer = signerAddress(env.SIGNER_KEY); } catch (e) {}
   if (addr) { const r = await ethCall(chainId, addr, "0x238ac933"); if (r) contractSigner = "0x" + r.slice(-40); }
+  let freeMinted = null, freeCap = null;
+  if (addr) { const [a, b] = await Promise.all([ethCall(chainId, addr, "0xd10a1a2b"), ethCall(chainId, addr, "0xb6a0b783")]);
+    freeMinted = a ? parseInt(a, 16) : 0; freeCap = b ? parseInt(b, 16) : null; }
   const signerOk = !!signer && !!contractSigner && signer.toLowerCase() === contractSigner.toLowerCase();
-  return json({ contract: addr, chainId, ...getPhase(env), priceBNB: "0.00022", signerOk });
+  return json({ contract: addr, chainId, ...getPhase(env), priceBNB: "0.00022", freeMinted, freeCap, signerOk });
 }
