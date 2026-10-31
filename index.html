@@ -391,6 +391,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
             <div class="x-field" id="fA"><label class="x-label" for="agentId">Binance Agent ID</label><div class="x-in"><input id="agentId" autocomplete="off" placeholder="e.g. youragent.ai"></div><p class="x-err">Enter your agent ID.</p></div>
             <div class="x-field" id="fW"><label class="x-label" for="wallet">Agent wallet address</label><div class="x-in"><input id="wallet" autocomplete="off" placeholder="0x…" spellcheck="false"></div><p class="x-err">Use 0x followed by 40 hex characters.</p></div>
             <p class="x-label">One entry per X account. Winners are checked manually.</p>
+            <p id="formErr" role="alert" hidden style="font:400 12px var(--mono);letter-spacing:.08em;color:#d98a7e"></p>
             <div class="x-btns"><button type="button" class="x-btn x-btn--line" id="back">Back</button><button type="submit" class="x-btn" id="gen">Generate my card</button></div>
           </form>
         </div>
@@ -551,9 +552,16 @@ var FORM_ENDPOINT = "/api/wl";
     var finish = function(dup){btn.disabled = false; btn.textContent = "Generate my card"; $("#dup").hidden = !dup; go(2); draw()};
     if (!FORM_ENDPOINT) return finish(false);
     var ctl = window.AbortController ? new AbortController() : null, to = setTimeout(function(){ctl && ctl.abort()}, 8000);
+    var fail = function(msg){clearTimeout(to); btn.disabled = false; btn.textContent = "Generate my card";
+      var m = String(msg||""), f = /username/i.test(m) ? "#fU" : /agent id/i.test(m) ? "#fA" : /wallet/i.test(m) ? "#fW" : null;
+      if (f){ $(f).classList.add("is-bad"); $(".x-err", $(f)).textContent = m; } else { $("#formErr").textContent = m || "Something went wrong. Please try again."; $("#formErr").hidden = false; }};
+    $("#formErr").hidden = true;
     fetch(FORM_ENDPOINT, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(data), signal: ctl && ctl.signal})
-      .then(function(r){return r.json()}).then(function(j){clearTimeout(to); finish(!!(j && j.duplicate===true))})
-      .catch(function(){clearTimeout(to); finish(false)});
+      .then(function(r){return r.json().catch(function(){return {}}).then(function(j){
+        if (r.ok && j && j.ok === true){ clearTimeout(to); finish(j.duplicate === true); }
+        else fail(j && j.error ? j.error : "Registration failed. Please try again.");
+      })})
+      .catch(function(){fail("Couldn't reach the server. Please check your connection and try again.")});
   };
 
   // card
