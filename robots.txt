@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://autonomousgenesis.pages.dev/sitemap.xml
+Sitemap: https://autonomousgenesis.xyz/sitemap.xml
