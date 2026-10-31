@@ -314,11 +314,13 @@ p.x-muted,.x-muted{color:var(--tx2)}
     <div class="x-agent" id="agent-prompt">
       <div class="x-agent__h">
         <div><p class="x-label" id="pLabel">Agent prompt</p><h3 id="pTitle">Prompt unlocks when the mint goes live.</h3></div>
-        <button class="x-btn" id="copyPrompt" type="button" hidden>Copy prompt</button>
+        
       </div>
       <div class="m-wait" id="pWait">The mint prompt appears here at 18:30 UTC, for the phase that's live.</div>
-      <pre id="agentPromptText" aria-label="Mint prompt for your AI agent" hidden></pre>
-      <div class="x-agent__f"><span id="agentPromptNote">Paste it into the AI agent that holds your Binance Agent ID wallet.</span><span>The team never DMs. Never share your private key.</span></div>
+      <div id="qtyBox" hidden style="margin:0 0 18px"><p class="x-label" style="margin-bottom:10px">How many do you want to mint?</p><div class="x-btns" role="group" aria-label="Quantity" id="qtyBtns"></div><p class="x-mono x-muted" id="qtyTotal" style="margin-top:10px"></p></div>
+      <pre id="agentPromptText" hidden style="display:none"></pre>
+      <button class="x-btn" id="copyPrompt" type="button" hidden style="width:100%;max-width:420px">Copy prompt</button>
+      <div class="x-agent__f"><span id="agentPromptNote">Tap copy, then paste it into the AI agent that holds your Binance Agent ID wallet.</span><span>The team never DMs. Never share your private key.</span></div>
     </div>
   </div>
 </main>
@@ -337,7 +339,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
 <script>
 (function(){
 var SITE="https://autonomousgenesis.xyz";
-function build(c,id,m){
+function build(c,id,m,q){q=q||1;var tot=(q*22/100000).toFixed(5).replace(/0+$/,""),wei=(BigInt(q)*220000000000000n).toString();
 var free=m==="free",net=id===97?"BNB Smart Chain Testnet":"BNB Smart Chain (BSC) Mainnet",scan=id===97?"https://testnet.bscscan.com":"https://bscscan.com",ca=c||"Published on "+SITE+" at mint (must match the \"contract\" field in the mint pass)";
 var L="────────────────────────────────────────\n";
 var passUrl=SITE+"/api/mint-pass?wallet=<AGENT_WALLET>"+(free?"":"&type=paid");
@@ -346,11 +348,11 @@ return "AUTONOMOUS GENESIS (AUTOG) · "+(free?"FREE MINT":"PAID MINT")+" · AGEN
 "COLLECTION\n  Name ........ Autonomous Genesis (AUTOG) · ERC-721\n  Supply ...... 2,222\n  Network ..... "+net+"\n  Chain ID .... "+id+"\n  Contract .... "+ca+"\n  Website ..... "+SITE+"\n  X ........... @Autonomousgen\n\n"+
 "MINT TERMS\n"+(free?
 "  Phase ....... Free mint (first 500 mints only)\n  Cost ........ 0 BNB (gas only)\n  Limit ....... 1 per wallet\n  Function .... wlMint(uint256 deadline, bytes signature)\n  Value ....... 0\n":
-"  Phase ....... Paid mint\n  Price ....... 0.00022 BNB per NFT (220000000000000 wei)\n  Limit ....... Up to 5 per wallet\n  Function .... publicMint(uint256 quantity, uint256 deadline, bytes signature) payable\n  Value ....... quantity × 0.00022 BNB\n")+"\n"+
+"  Phase ....... Paid mint\n  Quantity .... "+q+" NFT"+(q>1?"s":"")+"\n  Price ....... 0.00022 BNB per NFT\n  Total ....... "+tot+" BNB ("+wei+" wei) plus gas\n  Limit ....... Up to 5 per wallet\n  Function .... publicMint(uint256 quantity, uint256 deadline, bytes signature) payable\n  Value ....... "+tot+" BNB ("+wei+" wei)\n")+"\n"+
 "PROCEDURE\n"+
 "  1. Request a mint pass\n     GET "+passUrl+"\n"+
 "  2. Validate the response. Stop and report if any check fails:\n     • \"eligible\" is true (otherwise report the \"reason\")\n     • \"chainId\" equals "+id+"\n     • \"contract\" equals "+(c||"the address published on "+SITE)+"\n     • \"type\" equals \""+(free?"FREE":"PUBLIC")+"\""+(free?" (anything else means the free mints are gone or this wallet already claimed one: do not pay)":"")+"\n"+
-"  3. Send one transaction within 15 minutes (the pass expires):\n     "+(free?"wlMint(deadline, signature) with value 0":"publicMint(quantity, deadline, signature) with value = quantity × 0.00022 BNB\n     Use quantity 1 unless I specify up to 5")+"\n     Use \"deadline\" and \"signature\" exactly as returned.\n"+
+"  3. Send one transaction within 15 minutes (the pass expires):\n     "+(free?"wlMint(deadline, signature) with value 0":"publicMint("+q+", deadline, signature) with value exactly "+wei+" wei ("+tot+" BNB)\n     Mint exactly "+q+". Do not change the quantity.")+"\n     Use \"deadline\" and \"signature\" exactly as returned.\n"+
 "  4. On failure or expiry, request a fresh pass and retry once. Then stop and report.\n\n"+
 "REPORT BACK\n  • Status: minted / not minted\n  • Transaction hash and link: "+scan+"/tx/<hash>\n  • Token ID(s), if available\n  • The exact error or \"reason\", if it failed\n\n"+
 "SECURITY RULES\n  • Interact only with the contract above. Never send BNB anywhere else.\n  • Never share or request a private key or seed phrase.\n  • There is no AUTOG token. The team never DMs.\n"+L+"End of instructions.";}
@@ -359,12 +361,19 @@ function $(i){return document.getElementById(i)}
 function pad(n){return("0"+n).slice(-2)}
 function hm(t){var d=new Date(t*1000);return pad(d.getUTCHours())+":"+pad(d.getUTCMinutes())+" UTC"}
 var D=null,target=0,mode=null;
-function setPrompt(m,c,id){
-  if(m===mode)return;mode=m;var pre=$("agentPromptText"),btn=$("copyPrompt"),w=$("pWait");
-  if(!m){pre.hidden=true;btn.hidden=true;w.hidden=false;return}
-  pre.textContent=build(c,id,m);pre.hidden=false;btn.hidden=false;w.hidden=true;
+var Q=1,PC=null,PID=56;
+function qtyUI(){var bx=$("qtyBtns");if(!bx.childNodes.length){for(var i=1;i<=5;i++){var b=document.createElement("button");b.type="button";b.textContent=i;b.setAttribute("data-q",i);b.onclick=function(){Q=+this.getAttribute("data-q");refresh()};bx.appendChild(b)}}
+for(var j=0;j<bx.childNodes.length;j++){var n=bx.childNodes[j],on=+n.getAttribute("data-q")===Q;n.className="x-btn"+(on?"":" x-btn--line");n.setAttribute("aria-pressed",on?"true":"false");n.style.minWidth="56px"}
+$("qtyTotal").textContent="Total: "+(Q*22/100000).toFixed(5).replace(/0+$/,"")+" BNB + gas"}
+function refresh(){var btn=$("copyPrompt");if(!mode)return;$("agentPromptText").textContent=build(PC,PID,mode,Q);
+if(mode==="paid"){qtyUI();btn.textContent="Copy prompt · mint "+Q}else btn.textContent="Copy free mint prompt"}
+function setPrompt(m,c,id){PC=c;PID=id;
+  if(m===mode){refresh();return}mode=m;var btn=$("copyPrompt"),w=$("pWait");
+  if(!m){btn.hidden=true;$("qtyBox").hidden=true;w.hidden=false;return}
+  btn.hidden=false;w.hidden=true;$("qtyBox").hidden=m!=="paid";
   $("pLabel").textContent=m==="free"?"Live · Phase 1 · Free mint":"Live · Phase 2 · Paid mint";
-  $("pTitle").textContent=m==="free"?"Free mint prompt. First 500, 1 per wallet.":"Paid mint prompt. 0.00022 BNB, up to 5 per wallet.";
+  $("pTitle").textContent=m==="free"?"Free mint. 1 per wallet, first 500.":"Paid mint. Pick 1 to 5, then copy.";
+  refresh();
 }
 function tick(){
   if(!target)return;var r=Math.max(0,target-Math.floor(Date.now()/1000));
@@ -386,7 +395,7 @@ function render(d){
 function poll(){fetch("/api/mint-info",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){D=d;render(d)}).catch(function(){});
   fetch("/api/supply",{cache:"no-store"}).then(function(r){return r.json()}).then(function(s){if(typeof s.minted==="number"){$("mMinted").textContent=s.minted.toLocaleString("en-US");$("mBar").style.width=Math.min(100,s.minted/2222*100)+"%"}}).catch(function(){})}
 poll();setInterval(poll,15000);setInterval(tick,1000);
-var btn=$("copyPrompt");btn.onclick=function(){var t=$("agentPromptText").textContent;function ok(){btn.textContent="Copied";setTimeout(function(){btn.textContent="Copy prompt"},1800)}
+var btn=$("copyPrompt");btn.onclick=function(){var t=$("agentPromptText").textContent;function ok(){var o=btn.textContent;btn.textContent="Copied ✓ Paste it to your agent";setTimeout(function(){refresh()},1800)}
 if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else fb();
 function fb(){var a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();try{document.execCommand("copy");ok()}catch(e){}a.remove()}};
 var bg=$("burger"),mn=$("menu");if(bg&&mn)bg.onclick=function(){var o=mn.classList.toggle("is-open");bg.setAttribute("aria-expanded",o?"true":"false")};
