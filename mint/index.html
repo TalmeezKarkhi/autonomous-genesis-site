@@ -306,9 +306,9 @@ p.x-muted,.x-muted{color:var(--tx2)}
       </div>
       <div class="m-state">
         <span class="m-badge" id="badge"><i></i><span id="badgeT">Not live yet</span></span>
-        <div class="m-cd" id="cd">--:--:--</div>
+        <div class="m-cd" id="cd" hidden style="display:none">--:--:--</div>
         <p class="x-mono x-muted" id="cdSub">Opens 2026-10-31 · 18:30 UTC · runs 12h</p>
-        <div class="x-prog" style="margin-top:24px"><p class="x-mono"><span class="x-muted">Minted</span> <span id="mMinted">0</span> / 2,222 <span class="x-muted" id="mFree"></span></p><div class="x-bar"><i id="mBar" style="width:0;transition:width .8s ease"></i></div></div>
+        <div class="x-prog" style="margin-top:24px"><p class="x-label" style="margin-bottom:6px">Minted</p><div class="m-cd" style="margin:6px 0 10px"><span id="mMinted">0</span><span class="x-muted" style="font-size:.42em"> / 2,222</span></div><p class="x-mono x-muted" id="mFree" style="margin-bottom:12px"></p><div class="x-bar"><i id="mBar" style="width:0;transition:width .8s ease"></i></div></div>
         <dl class="x-spec" style="margin-top:20px">
           <div><dt>Contract</dt><dd id="caCell">Posted here at mint</dd></div>
           <div><dt>Chain</dt><dd>BNB Chain (56)</dd></div>
@@ -405,8 +405,8 @@ function render(d){
   if(d.endsAt){target=d.endsAt;tick();$("cdSub").textContent="Time left · ends "+hm(d.endsAt)}
   if(d.mode!=="free"&&d.mode!=="paid"){if(d.mode===undefined&&!LAST)return;b.className="m-badge";bt.textContent="Paused";setPrompt(null);$("pTitle").textContent="Mint is paused for a moment.";$("pWait").textContent="Hold tight. This page refreshes on its own. Updates on x.com/Autonomousgen.";return}
   b.className="m-badge is-live";
-  if(d.mode==="paid"){bt.textContent="Live · Paid mint";p1.className="m-ph is-done";p2.className="m-ph is-on";$("mFree").textContent="· free 500 claimed"}
-  else{bt.textContent="Live · Free mint";p1.className="m-ph is-on";$("mFree").textContent="· "+left+" of "+cap+" free left"}
+  if(d.mode==="paid"){bt.textContent="Live · Paid mint";p1.className="m-ph is-done";p2.className="m-ph is-on";$("mFree").textContent="Free 500 claimed · paid mint live"}
+  else{bt.textContent="Live · Free mint";p1.className="m-ph is-on";$("mFree").textContent=left+" of "+cap+" free left"}
   setPrompt(d.mode,c,id);
 }
 function poll(){fetch("/api/mint-info",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){D=d;render(d)}).catch(function(){})}
