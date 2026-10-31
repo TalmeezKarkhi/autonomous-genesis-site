@@ -432,7 +432,8 @@
       .x-hero h1, .x-h2, .x-foot__tag { text-transform: none; }
       .x-row--rev { display: none; }
     </style>
-  <style id="logo-fix">.x-logo__mark{width:32px;height:32px;border-radius:50%;background:none!important;box-shadow:0 0 14px rgb(0 229 255 / .35);object-fit:cover}.x-logo__mark::after{display:none!important}.x-foot__brand .x-logo__mark{width:40px;height:40px}</style>
+  
+<style id="logo-fix">.x-logo__mark{width:32px;height:32px;border-radius:50%;background:none!important;box-shadow:0 0 14px rgb(0 229 255 / .35);object-fit:cover}.x-logo__mark::after{display:none!important}.x-foot__brand .x-logo__mark{width:40px;height:40px}</style>
 </head>
   <body>
     <div class="x-page" id="top">
@@ -1050,7 +1051,7 @@
     <script>
       // Whitelist flow
       var PINNED_POST_URL = "https://x.com/Autonomousgen";
-      var FORM_ENDPOINT = "";
+      var FORM_ENDPOINT = "/api/wl";
       (function () {
         var $ = function (id) { return document.getElementById(id); };
         var panels = [$("wl-1"), $("wl-2"), $("wl-3")];

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>AUTOG · WL Admin</title>
+<link rel="icon" href="/favicon.png">
+<style>
+:root{--bg:#07090d;--card:#0c1016;--line:#1c2430;--ink:#f4f6ff;--dim:#8a91ad;--cy:#00e5ff;--lime:#b6ff3b;--red:#ff5c7a;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:24px 16px}
+h1{font-size:22px;margin:0 0 4px;display:flex;align-items:center;gap:10px}h1 img{width:30px;height:30px;border-radius:50%}
+.lbl{font:13px var(--mono);color:var(--cy)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px}
+input,select,button{font:inherit;color:var(--ink);background:#0a0d12;border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+button{cursor:pointer;background:#10161f}button.pri{background:var(--cy);color:#001014;border-color:var(--cy);font-weight:600}
+button:disabled{opacity:.5}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:16px 0}
+.stat b{display:block;font-size:26px}.stat span{font:12px var(--mono);color:var(--dim)}
+.tbl{overflow:auto;margin-top:12px}table{width:100%;border-collapse:collapse;min-width:820px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:12px var(--mono);color:var(--dim);font-weight:400;position:sticky;top:0;background:var(--card)}
+td.m{font:13px var(--mono);word-break:break-all}
+a{color:var(--cy)}.pill{font:12px var(--mono);padding:2px 8px;border-radius:99px;border:1px solid var(--line)}
+.approved{color:var(--lime);border-color:#3c5214}.rejected{color:var(--red);border-color:#5a1f2b}.pending{color:var(--dim)}
+#login{max-width:380px;margin:12vh auto}#err{color:var(--red);font-size:14px;min-height:20px}
+.hide{display:none}
+</style></head><body>
+<div id="login" class="card">
+  <h1><img src="/logo-mark.webp" alt="">WL Admin</h1><p class="lbl">/admin · private</p>
+  <form id="lf" class="row" style="flex-direction:column;align-items:stretch">
+    <input id="key" type="password" placeholder="Admin password" autocomplete="current-password" required>
+    <button class="pri" type="submit">Unlock</button><div id="err"></div>
+  </form>
+</div>
+<div id="app" class="wrap hide">
+  <div class="row" style="justify-content:space-between">
+    <div><h1><img src="/logo-mark.webp" alt="">Autonomous Genesis · WL entries</h1><span class="lbl">/admin · only you can see this</span></div>
+    <div class="row"><button id="refresh">Refresh</button><button id="csv">Download CSV</button><button id="lock">Lock</button></div>
+  </div>
+  <div class="stats">
+    <div class="card stat"><b id="sTotal">0</b><span>TOTAL ENTRIES</span></div>
+    <div class="card stat"><b id="sApproved">0</b><span>APPROVED</span></div>
+    <div class="card stat"><b id="sPending">0</b><span>PENDING</span></div>
+    <div class="card stat"><b id="sRejected">0</b><span>REJECTED</span></div>
+  </div>
+  <div class="card">
+    <div class="row">
+      <input id="q" placeholder="Search X username, agent ID or wallet" style="flex:1;min-width:220px">
+      <select id="f"><option value="">All</option><option>pending</option><option>approved</option><option>rejected</option></select>
+      <button id="bA" disabled>Approve selected</button><button id="bR" disabled>Reject selected</button><button id="bD" disabled>Delete selected</button>
+    </div>
+    <div class="tbl"><table><thead><tr><th><input type="checkbox" id="all"></th><th>#</th><th>X username</th><th>Agent ID</th><th>Agent wallet</th><th>Status</th><th>Country</th><th>Joined (IST)</th></tr></thead><tbody id="tb"></tbody></table></div>
+    <p id="empty" class="lbl hide" style="padding:16px 0">No entries yet.</p>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY=sessionStorage.getItem("autog_admin")||"",data=[],sel=new Set();
+  function $(i){return document.getElementById(i)}
+  function api(m,body){return fetch("/api/admin",{method:m,headers:{"authorization":"Bearer "+KEY,"content-type":"application/json"},body:body?JSON.stringify(body):undefined}).then(function(r){if(r.status===401)throw new Error("Wrong password");return r.json()})}
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function ist(t){try{return new Date(t).toLocaleString("en-IN",{timeZone:"Asia/Kolkata",dateStyle:"medium",timeStyle:"short"})}catch(e){return t}}
+  function load(){return api("GET").then(function(r){data=r.entries||[];sel.clear();render()})}
+  function render(){
+    var q=$("q").value.toLowerCase(),f=$("f").value;
+    var rows=data.filter(function(e){return(!f||e.status===f)&&(!q||(e.x_username+" "+e.agent_id+" "+e.agent_address).toLowerCase().indexOf(q)>-1)});
+    $("sTotal").textContent=data.length;["approved","pending","rejected"].forEach(function(s){$("s"+s[0].toUpperCase()+s.slice(1)).textContent=data.filter(function(e){return e.status===s}).length});
+    $("tb").innerHTML=rows.map(function(e){return '<tr><td><input type="checkbox" data-id="'+e.id+'"'+(sel.has(e.id)?" checked":"")+'></td><td class="m">'+e.id+'</td><td><a href="https://x.com/'+esc(e.x_username)+'" target="_blank" rel="noopener">@'+esc(e.x_username)+'</a></td><td class="m">'+esc(e.agent_id)+'</td><td class="m"><a href="https://bscscan.com/address/'+esc(e.agent_address)+'" target="_blank" rel="noopener">'+esc(e.agent_address)+'</a></td><td><span class="pill '+esc(e.status)+'">'+esc(e.status)+'</span></td><td class="m">'+esc(e.ip_country)+'</td><td class="m">'+ist(e.created_at)+'</td></tr>'}).join("");
+    $("empty").classList.toggle("hide",rows.length>0);
+    ["bA","bR","bD"].forEach(function(b){$(b).disabled=!sel.size});
+  }
+  function act(status,del){if(!sel.size)return;if(del&&!confirm("Delete "+sel.size+" entr"+(sel.size>1?"ies":"y")+"?"))return;api("POST",{ids:Array.from(sel),status:status,delete:!!del}).then(load).catch(function(e){alert(e.message)})}
+  $("tb").addEventListener("change",function(ev){var id=+ev.target.getAttribute("data-id");if(!id)return;ev.target.checked?sel.add(id):sel.delete(id);render()});
+  $("all").addEventListener("change",function(ev){sel.clear();if(ev.target.checked)[].forEach.call(document.querySelectorAll("#tb input"),function(i){sel.add(+i.getAttribute("data-id"))});render()});
+  $("q").addEventListener("input",render);$("f").addEventListener("change",render);
+  $("bA").onclick=function(){act("approved")};$("bR").onclick=function(){act("rejected")};$("bD").onclick=function(){act("pending",true)};
+  $("refresh").onclick=load;$("lock").onclick=function(){sessionStorage.removeItem("autog_admin");location.reload()};
+  $("csv").onclick=function(){var h=["id","x_username","agent_id","agent_address","status","country","created_at"];var lines=[h.join(",")].concat(data.map(function(e){return[e.id,e.x_username,e.agent_id,e.agent_address,e.status,e.ip_country,e.created_at].map(function(v){return'"'+String(v==null?"":v).replace(/"/g,'""')+'"'}).join(",")}));var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([lines.join("\n")],{type:"text/csv"}));a.download="autog-wl-entries.csv";a.click()};
+  function unlock(){load().then(function(){$("login").classList.add("hide");$("app").classList.remove("hide");sessionStorage.setItem("autog_admin",KEY)}).catch(function(e){$("err").textContent=e.message;sessionStorage.removeItem("autog_admin")})}
+  $("lf").onsubmit=function(ev){ev.preventDefault();KEY=$("key").value;$("err").textContent="";unlock()};
+  if(KEY)unlock();
+})();
+</script></body></html>
