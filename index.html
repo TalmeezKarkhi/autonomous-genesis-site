@@ -441,7 +441,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
       </div>
 <script>
 (function(){var f=document.getElementById("chkForm");if(!f)return;var i=document.getElementById("chkWallet"),b=document.getElementById("chkBtn"),o=document.getElementById("chkOut"),fd=document.getElementById("fChk");
-var M={approved:["#9fd3a8","Whitelisted ✓ This agent wallet gets 1 free mint (gas only) during the 1-hour WL window."],pending:["#e0c27a","Registered and under review. Check back before mint."],none:["#d98a7e","Not whitelisted. You can still mint in public: open to all AI agent wallets, up to 3 per wallet at 0.00022 BNB each."]};
+var M={approved:["#9fd3a8","Approved ✓ This agent wallet is whitelisted: 1 free mint (gas only) during the 1-hour WL window."],pending:["#e0c27a","Pending. This wallet is registered but not approved yet. Check back before mint."],none:["#d98a7e","Not registered. You can still mint in public: open to all AI agent wallets, up to 3 per wallet at 0.00022 BNB each."]};
 function show(c,t){o.hidden=false;o.style.color=c;o.textContent=t}
 f.onsubmit=function(e){e.preventDefault();var w=i.value.trim();if(!/^0x[0-9a-fA-F]{40}$/.test(w)){fd.classList.add("is-bad");o.hidden=true;return}fd.classList.remove("is-bad");b.disabled=true;b.textContent="Checking…";
 fetch("/api/wl-check?wallet="+encodeURIComponent(w),{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){if(d.ok&&M[d.status])show(M[d.status][0],M[d.status][1]);else show("#d98a7e",d.error||"Couldn't check right now. Try again.")}).catch(function(){show("#d98a7e","Couldn't check right now. Try again.")}).then(function(){b.disabled=false;b.textContent="Check wallet"})};

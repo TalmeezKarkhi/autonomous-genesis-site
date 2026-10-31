@@ -7,6 +7,6 @@ export async function onRequestGet({ request, env }) {
   if (!env.DB) return json({ ok: false, error: "Checker is offline. Try again soon." }, 503);
   await ensure(env.DB);
   const row = await env.DB.prepare("SELECT status FROM wl_entries WHERE lower(agent_address)=lower(?)").bind(wallet).first();
-  const status = !row ? "none" : row.status === "approved" ? "approved" : row.status === "pending" ? "pending" : "none";
+  const status = !row ? "none" : row.status === "approved" ? "approved" : "pending"; // registered but not approved = pending
   return json({ ok: true, status });
 }
