@@ -143,6 +143,15 @@ p.x-muted,.x-muted{color:var(--tx2)}
 .x-bar{height:1px;background:var(--ln);position:relative}
 .x-bar i{position:absolute;left:0;top:-1px;height:3px;background:var(--tx)}
 .x-row p{color:var(--tx2);font-size:14px}
+/* agent prompt */
+.x-agent{margin-top:72px;border:1px solid var(--ln);background:var(--sf);padding:32px}
+.x-agent__h{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+.x-agent__h h3{font:400 clamp(28px,3vw,40px)/1.05 var(--serif);margin:8px 0 0}
+.x-agent ol{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:0 0 24px;color:var(--tx2);font-size:14px}
+.x-agent ol li span{display:block;color:var(--ac);font:400 12px var(--mono);letter-spacing:.12em;margin-bottom:4px}
+.x-agent pre{white-space:pre-wrap;word-break:break-word;font:400 13px/1.65 var(--mono);color:var(--tx);background:var(--bg);border:1px solid var(--ln);padding:20px;max-height:420px;overflow:auto}
+.x-agent__f{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:16px;color:var(--tx2);font-size:13px}
+@media(max-width:760px){.x-agent{padding:20px}.x-agent ol{grid-template-columns:1fr}.x-agent pre{font-size:12px;padding:14px}}
 /* mint */
 .x-mint__l{grid-column:1/5}
 .x-mint__l p{color:var(--tx2);margin-top:28px;font-size:15px}
@@ -365,6 +374,19 @@ p.x-muted,.x-muted{color:var(--tx2)}
           <div class="x-prog"><p class="x-mono"><span class="x-muted">Minted</span> <span id="mintCount">0</span> / 2,222 <span class="x-muted" id="mintLive"></span></p><div class="x-bar"><i id="mintBar" style="width:0;transition:width .8s ease"></i></div></div>
           <button class="x-btn" disabled>Mint opens soon</button>
         </div>
+      </div>
+      <div class="x-agent x-rv" id="agent-prompt">
+        <div class="x-agent__h">
+          <div><p class="x-label">Mint with your agent</p><h3>Copy. Paste. Your agent mints.</h3></div>
+          <button class="x-btn" id="copyPrompt" type="button">Copy prompt</button>
+        </div>
+        <ol>
+          <li><span>01</span>Copy the prompt below.</li>
+          <li><span>02</span>Paste it into your AI agent that holds your agent ID wallet.</li>
+          <li><span>03</span>Your agent gets a mint pass and mints from its own wallet.</li>
+        </ol>
+        <pre id="agentPromptText" aria-label="Mint prompt for your AI agent"></pre>
+        <div class="x-agent__f"><span id="agentPromptNote">Contract address is posted here and on X at mint.</span><span>The team never DMs. Never share your private key.</span></div>
       </div>
     </div>
   </section>
@@ -606,6 +628,34 @@ var FORM_ENDPOINT = "/api/wl";
 function anim(t){var s=cur,st=performance.now();function f(n){var p=Math.min(1,(n-st)/700);c.textContent=Math.round(s+(t-s)*p).toLocaleString("en-US");if(p<1)requestAnimationFrame(f);else cur=t}requestAnimationFrame(f)}
 function tick(){fetch("/api/supply",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){if(typeof d.minted!=="number")return;if(d.minted!==cur)anim(d.minted);b.style.width=Math.min(100,d.minted/2222*100)+"%";l.textContent=d.minted>0&&d.minted<2222?"· LIVE":(d.minted>=2222?"· SOLD OUT":"")}).catch(function(){})}
 tick();setInterval(tick,10000)})();
+</script>
+<script>
+(function(){
+var SITE="https://autonomousgenesis.pages.dev",pre=document.getElementById("agentPromptText"),btn=document.getElementById("copyPrompt"),note=document.getElementById("agentPromptNote");
+function build(c,id){
+var net=id===97?"BNB Smart Chain Testnet":"BNB Smart Chain (BSC) Mainnet",scan=id===97?"https://testnet.bscscan.com":"https://bscscan.com",ca=c||"[not live yet: use the \"contract\" value from the mint pass, and confirm it matches the one on "+SITE+"]";
+return "You are my AI agent. Mint the Autonomous Genesis (AUTOG) NFT for me from YOUR OWN agent wallet (the wallet linked to my agent ID).\n\n"+
+"COLLECTION\n- Name: Autonomous Genesis (AUTOG), ERC-721, 2,222 supply\n- Network: "+net+"\n- Chain ID: "+id+"\n- Contract: "+ca+"\n- Official site: "+SITE+"\n- Official X: @Autonomousgen\n\n"+
+"PRICES\n- WL mint: free (0 BNB), 1 per wallet\n- Public mint: 0.00022 BNB each (220000000000000 wei), max 3 per wallet\n- Keep a little extra BNB in the wallet for gas\n\n"+
+"STEPS\n1. Use your agent wallet address. The same wallet must send the mint transaction.\n"+
+"2. Get a mint pass:\n   GET "+SITE+"/api/mint-pass?wallet=<YOUR_AGENT_WALLET>\n"+
+"   - If \"eligible\" is false, stop and tell me the \"reason\".\n"+
+"   - Check \"chainId\" is "+id+(c?" and \"contract\" is "+c:" and \"contract\" matches the address posted on "+SITE)+". If not, stop.\n"+
+"3. The pass is valid for 15 minutes. Send ONE transaction to the contract on chain ID "+id+":\n"+
+"   - If \"type\" is \"WL\": call wlMint(deadline, signature) with value 0.\n"+
+"   - If \"type\" is \"PUBLIC\": call publicMint(quantity, deadline, signature). Use quantity 1 unless I say up to 3. Value = quantity x 0.00022 BNB.\n"+
+"   - Use \"deadline\" and \"signature\" exactly as returned.\n"+
+"4. If the pass expires or the transaction fails, request a fresh pass once and retry. Then report.\n"+
+"5. Reply with the transaction hash and link: "+scan+"/tx/<hash>\n\n"+
+"FUNCTIONS (ABI)\nfunction wlMint(uint256 deadline, bytes signature)\nfunction publicMint(uint256 quantity, uint256 deadline, bytes signature) payable\n\n"+
+"SAFETY\n- Only interact with the contract above. Never send BNB anywhere else.\n- Never reveal or ask for a private key or seed phrase.\n- There is no AUTOG token. The team never DMs.";}
+function render(c,id){pre.textContent=build(c,id);note.textContent=c?"Live contract on chain ID "+id+".":"Contract address is posted here and on X at mint."}
+render(null,56);
+fetch("/api/mint-info",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){render(d.contract,d.chainId||56)}).catch(function(){});
+btn.onclick=function(){var t=pre.textContent;function ok(){btn.textContent="Copied";setTimeout(function(){btn.textContent="Copy prompt"},1800)}
+if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else fb();
+function fb(){var a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();try{document.execCommand("copy");ok()}catch(e){}a.remove()}};
+})();
 </script>
 </body>
 </html>
