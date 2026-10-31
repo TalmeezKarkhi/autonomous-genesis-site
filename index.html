@@ -275,7 +275,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
     <div class="x-wrap">
       <div class="x-grid">
         <div class="x-hero__l">
-          <p class="x-status x-mono"><i></i>Agent network online</p>
+          <p class="x-status x-mono"><i></i><span id="heroStatus">Mint 2026-10-31 18:30 UTC · first 500 free</span></p>
           <h1 class="x-serif">Art made by machines. Minted only by AI.</h1>
           <p class="x-hero__sub">2,222 generative neural artworks on BNB Chain. Minted by AI agent wallets: first 500 mint free, then 0.00022 BNB, up to 5 per wallet.</p>
           <div class="x-btns">
@@ -293,8 +293,8 @@ p.x-muted,.x-muted{color:var(--tx2)}
       </div>
       <div class="x-data x-mono">
         <div><span class="x-label">Supply</span><b>2,222</b></div>
-        <div><span class="x-label">First 500</span><b>FREE</b></div>
-        <div><span class="x-label">Then</span><b>0.00022 BNB</b></div>
+        <div><span class="x-label" id="dl1">First 500</span><b id="dv1">FREE</b></div>
+        <div><span class="x-label" id="dl2">Then</span><b id="dv2">0.00022 BNB</b></div>
         <div><span class="x-label">Chain</span><b>BNB</b></div>
       </div>
       <div class="x-log" id="log" aria-label="Mint log" role="img"></div>
@@ -382,10 +382,11 @@ p.x-muted,.x-muted{color:var(--tx2)}
           <button class="x-btn" id="copyPrompt" type="button">Copy prompt</button>
         </div>
         <ol>
-          <li><span>01</span>Copy the prompt below.</li>
+          <li><span>01</span>Pick Free (first 500, 1 per wallet) or Paid, then copy.</li>
           <li><span>02</span>Paste it into your AI agent that holds your agent ID wallet.</li>
           <li><span>03</span>Your agent gets a mint pass and mints from its own wallet.</li>
         </ol>
+        <div class="x-btns" role="group" aria-label="Choose prompt" style="margin:0 0 16px"><button type="button" class="x-btn" data-pm="free" aria-pressed="true">Free mint · first 500</button><button type="button" class="x-btn x-btn--line" data-pm="paid" aria-pressed="false">Paid mint · up to 5</button></div>
         <pre id="agentPromptText" aria-label="Mint prompt for your AI agent"></pre>
         <div class="x-agent__f"><span id="agentPromptNote">Contract address is posted here and on X at mint.</span><span>The team never DMs. Never share your private key.</span></div>
       </div>
@@ -649,31 +650,47 @@ tick();setInterval(tick,10000)})();
 <script>
 (function(){
 var SITE="https://autonomousgenesis.xyz",pre=document.getElementById("agentPromptText"),btn=document.getElementById("copyPrompt"),note=document.getElementById("agentPromptNote");
-function build(c,id){
+var mode="free",CA=null,CID=56,FREE_OUT=false;
+function build(c,id,m){
 var net=id===97?"BNB Smart Chain Testnet":"BNB Smart Chain (BSC) Mainnet",scan=id===97?"https://testnet.bscscan.com":"https://bscscan.com",ca=c||"[not live yet: use the \"contract\" value from the mint pass, and confirm it matches the one on "+SITE+"]";
-return "You are my AI agent. Mint the Autonomous Genesis (AUTOG) NFT for me from YOUR OWN agent wallet (the wallet linked to my agent ID).\n\n"+
-"COLLECTION\n- Name: Autonomous Genesis (AUTOG), ERC-721, 2,222 supply\n- Network: "+net+"\n- Chain ID: "+id+"\n- Contract: "+ca+"\n- Official site: "+SITE+"\n- Official X: @Autonomousgen\n\n"+
-"PRICES\n- First 500 mints: free (0 BNB), 1 per wallet\n- After that: 0.00022 BNB each (220000000000000 wei), max 5 per wallet\n- Keep a little extra BNB in the wallet for gas\n\n"+
-"STEPS\n1. Use your agent wallet address. The same wallet must send the mint transaction.\n"+
-"2. Get a mint pass:\n   GET "+SITE+"/api/mint-pass?wallet=<YOUR_AGENT_WALLET>\n"+
-"   - If \"eligible\" is false, stop and tell me the \"reason\".\n"+
-"   - Check \"chainId\" is "+id+(c?" and \"contract\" is "+c:" and \"contract\" matches the address posted on "+SITE)+". If not, stop.\n"+
-"3. The pass is valid for 15 minutes. Send ONE transaction to the contract on chain ID "+id+":\n"+
-"   - If \"type\" is \"FREE\": call wlMint(deadline, signature) with value 0.\n"+
-"   - If \"type\" is \"PUBLIC\": call publicMint(quantity, deadline, signature). Use quantity 1 unless I say up to 5. Value = quantity x 0.00022 BNB.\n"+
-"   - Use \"deadline\" and \"signature\" exactly as returned.\n"+
-"   - After a FREE mint, to also buy paid ones, request a new pass with &type=paid added to the URL.\n"+
-"4. If the pass expires or the transaction fails, request a fresh pass once and retry. Then report.\n"+
-"5. Reply with the transaction hash and link: "+scan+"/tx/<hash>\n\n"+
-"FUNCTIONS (ABI)\nfunction wlMint(uint256 deadline, bytes signature)\nfunction publicMint(uint256 quantity, uint256 deadline, bytes signature) payable\n\n"+
-"SAFETY\n- Only interact with the contract above. Never send BNB anywhere else.\n- Never reveal or ask for a private key or seed phrase.\n- There is no AUTOG token. The team never DMs.";}
-function render(c,id){pre.textContent=build(c,id);var cc=document.getElementById("caCell");if(c&&cc){cc.innerHTML="";var a=document.createElement("a");a.className="x-link";a.target="_blank";a.rel="noopener";a.href=(id===97?"https://testnet.bscscan.com":"https://bscscan.com")+"/address/"+c;a.textContent=c.slice(0,6)+"…"+c.slice(-4)+" ↗";cc.appendChild(a);var sm=document.createElement("small");sm.textContent="Chain ID "+id;cc.appendChild(sm)}note.textContent=c?"Live contract on chain ID "+id+".":"Contract address is posted here and on X at mint."}
+var head="You are my AI agent. Mint the Autonomous Genesis (AUTOG) NFT for me from YOUR OWN agent wallet (the wallet linked to my agent ID).\n\n"+
+"COLLECTION\n- Name: Autonomous Genesis (AUTOG), ERC-721, 2,222 supply\n- Network: "+net+"\n- Chain ID: "+id+"\n- Contract: "+ca+"\n- Official site: "+SITE+"\n- Official X: @Autonomousgen\n\n";
+var chk="   - If \"eligible\" is false, stop and tell me the \"reason\".\n   - Check \"chainId\" is "+id+(c?" and \"contract\" is "+c:" and \"contract\" matches the address posted on "+SITE)+". If not, stop.\n";
+var tail="5. Reply with the transaction hash and link: "+scan+"/tx/<hash>\n\nSAFETY\n- Only interact with the contract above. Never send BNB anywhere else.\n- Never reveal or ask for a private key or seed phrase.\n- There is no AUTOG token. The team never DMs.";
+if(m==="free")return head+
+"THIS IS THE FREE MINT\n- The first 500 mints are free (0 BNB, you pay only gas), 1 per wallet.\n- Keep a little BNB in the wallet for gas.\n\nSTEPS\n1. Use your agent wallet address. The same wallet must send the mint transaction.\n"+
+"2. Get a mint pass:\n   GET "+SITE+"/api/mint-pass?wallet=<YOUR_AGENT_WALLET>\n"+chk+
+"   - If \"type\" is not \"FREE\", the free mints are gone or this wallet already used its free one. Stop and tell me. Do not pay.\n"+
+"3. The pass is valid for 15 minutes. Send ONE transaction to the contract on chain ID "+id+":\n   call wlMint(deadline, signature) with value 0, using \"deadline\" and \"signature\" exactly as returned.\n"+
+"4. If the pass expires or the transaction fails, request a fresh pass once and retry. Then report.\n"+tail+
+"\n\nFUNCTION (ABI)\nfunction wlMint(uint256 deadline, bytes signature)";
+return head+
+"THIS IS THE PAID MINT\n- Price: 0.00022 BNB per NFT (220000000000000 wei), up to 5 per wallet.\n- Keep a little extra BNB in the wallet for gas.\n\nSTEPS\n1. Use your agent wallet address. The same wallet must send the mint transaction.\n"+
+"2. Get a mint pass:\n   GET "+SITE+"/api/mint-pass?wallet=<YOUR_AGENT_WALLET>&type=paid\n"+chk+
+"   - \"type\" must be \"PUBLIC\".\n"+
+"3. The pass is valid for 15 minutes. Send ONE transaction to the contract on chain ID "+id+":\n   call publicMint(quantity, deadline, signature). Use quantity 1 unless I say a number up to 5. Value = quantity x 0.00022 BNB. Use \"deadline\" and \"signature\" exactly as returned.\n"+
+"4. If the pass expires or the transaction fails, request a fresh pass once and retry. Then report.\n"+tail+
+"\n\nFUNCTION (ABI)\nfunction publicMint(uint256 quantity, uint256 deadline, bytes signature) payable";}
+var tabs=document.querySelectorAll("[data-pm]");
+function setTabs(){for(var i=0;i<tabs.length;i++){var on=tabs[i].getAttribute("data-pm")===mode;tabs[i].className="x-btn"+(on?"":" x-btn--line");tabs[i].setAttribute("aria-pressed",on?"true":"false");if(tabs[i].getAttribute("data-pm")==="free")tabs[i].textContent=FREE_OUT?"Free mint · sold out":"Free mint · first 500"}}
+for(var i=0;i<tabs.length;i++)tabs[i].onclick=function(){mode=this.getAttribute("data-pm");render(CA,CID)};
+function render(c,id){CA=c;CID=id;pre.textContent=build(c,id,mode);setTabs();var cc=document.getElementById("caCell");if(c&&cc&&!cc.getAttribute("data-set")){cc.setAttribute("data-set","1");cc.innerHTML="";var a=document.createElement("a");a.className="x-link";a.target="_blank";a.rel="noopener";a.href=(id===97?"https://testnet.bscscan.com":"https://bscscan.com")+"/address/"+c;a.textContent=c.slice(0,6)+"…"+c.slice(-4)+" ↗";cc.appendChild(a)}if(note&&c)note.textContent=mode==="free"?"Free: 1 per wallet, first 500 only. Gas only.":"Paid: 0.00022 BNB each, up to 5 per wallet.";}
 render(null,56);
 function hm(t){var d=new Date(t*1000);return("0"+d.getUTCHours()).slice(-2)+":"+("0"+d.getUTCMinutes()).slice(-2)+" UTC"}
-function live(ph,d){d=d||{};if(ph==="ended"){var st0=document.getElementById("mintStatus");if(st0)st0.textContent="Mint ended";var mb0=document.getElementById("mintBtn");if(mb0){mb0.disabled=true;mb0.textContent="Mint ended"}return}
-if(ph==="off"&&d.startsAt&&d.startsAt*1000>Date.now()){var st1=document.getElementById("mintStatus");if(st1)st1.textContent="Opens "+new Date(d.startsAt*1000).toISOString().slice(0,10)+" "+hm(d.startsAt)+" · 12h · first 500 free";return}
-if(!/^(wl|public|both)$/.test(ph))return;var lbl={wl:"Live · Mint",public:"Live · Mint"+(d.freeCap&&d.freeMinted<d.freeCap?" · free left "+(d.freeCap-d.freeMinted):""),both:"Live · Mint"}[ph]+(d.endsAt?" · ends "+hm(d.endsAt):"");var h=document.getElementById("heroCta");if(h){h.textContent="Mint now";h.setAttribute("href","#mint")}var st=document.getElementById("mintStatus");if(st)st.textContent=lbl;var mb=document.getElementById("mintBtn");if(mb){mb.disabled=false;mb.textContent="Mint with your agent";mb.onclick=function(){document.getElementById("agent-prompt").scrollIntoView({behavior:"smooth"})}}}
-fetch("/api/mint-info",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){render(d.contract,d.chainId||56);live(d.phase,d)}).catch(function(){});
+function T(id,t){var e=document.getElementById(id);if(e)e.textContent=t}
+function live(ph,d){d=d||{};var cap=d.freeCap||500,fm=d.freeMinted||0,left=Math.max(0,cap-fm);FREE_OUT=d.freeCap!=null&&left===0;
+if(FREE_OUT){T("dl1","Price");T("dv1","0.00022 BNB");T("dl2","Per wallet");T("dv2","Up to 5");if(mode==="free")mode="paid"}
+else{T("dl1","First 500");T("dv1","FREE");T("dl2","Then");T("dv2","0.00022 BNB")}
+render(CA,CID);
+if(ph==="ended"){T("mintStatus","Mint ended");var mb0=document.getElementById("mintBtn");if(mb0){mb0.disabled=true;mb0.textContent="Mint ended"}return}
+if(ph==="off"&&d.startsAt&&d.startsAt*1000>Date.now()){T("mintStatus","Opens "+new Date(d.startsAt*1000).toISOString().slice(0,10)+" "+hm(d.startsAt)+" · 12h · first 500 free");return}
+if(!/^(wl|public|both)$/.test(ph))return;
+var lbl=FREE_OUT?"Live · Free sold out · 0.00022 BNB, up to 5 per wallet":"Live · First 500 FREE · "+left+" free left";if(d.endsAt)lbl+=" · ends "+hm(d.endsAt);
+var h=document.getElementById("heroCta");if(h){h.textContent=FREE_OUT?"Mint now · 0.00022 BNB":"Mint free now";h.setAttribute("href","#agent-prompt")}
+T("mintStatus",lbl);var hs=document.getElementById("heroStatus");if(hs)hs.textContent=FREE_OUT?"Mint live · 0.00022 BNB · up to 5 per wallet":"Mint live · first 500 free · "+left+" left";
+var mb=document.getElementById("mintBtn");if(mb){mb.disabled=false;mb.textContent=FREE_OUT?"Mint with your agent · 0.00022 BNB":"Mint free with your agent";mb.onclick=function(){document.getElementById("agent-prompt").scrollIntoView({behavior:"smooth"})}}}
+function poll(){fetch("/api/mint-info",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){CID=d.chainId||56;CA=d.contract;live(d.phase,d)}).catch(function(){})}
+poll();setInterval(poll,20000);
 btn.onclick=function(){var t=pre.textContent;function ok(){btn.textContent="Copied";setTimeout(function(){btn.textContent="Copy prompt"},1800)}
 if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else fb();
 function fb(){var a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();try{document.execCommand("copy");ok()}catch(e){}a.remove()}};
