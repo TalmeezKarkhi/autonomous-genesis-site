@@ -346,8 +346,8 @@ p.x-muted,.x-muted{color:var(--tx2)}
 (function(){
 var SITE="https://autonomousgenesis.xyz";
 var PW="220000000000000",PB="0.00022",MAXW=5;
-function bnb(w){w=BigInt(w);var i=w/1000000000000000000n,f=(w%1000000000000000000n).toString().padStart(18,"0").replace(/0+$/,"");return f?i+"."+f:i.toString()}
-function build(c,id,m,q){q=q||1;var wei=(BigInt(q)*BigInt(PW)).toString(),tot=bnb(wei);
+function bnb(w){var s=String(w).replace(/\D/g,"");while(s.length<19)s="0"+s;var i=s.slice(0,-18).replace(/^0+/,"")||"0",f=s.slice(-18).replace(/0+$/,"");return f?i+"."+f:i}
+function build(c,id,m,q){q=q||1;var wei=String(q*Number(PW)),tot=bnb(wei);
 var free=m==="free",net=id===97?"BNB Smart Chain Testnet":"BNB Smart Chain (BSC) Mainnet",scan=id===97?"https://testnet.bscscan.com":"https://bscscan.com",ca=c||"Published on "+SITE+" at mint (must match the \"contract\" field in the mint pass)";
 var L="────────────────────────────────────────\n";
 var passUrl=SITE+"/api/mint-pass?wallet=<AGENT_WALLET>"+(free?"":"&type=paid");
@@ -372,7 +372,7 @@ var D=null,target=0,mode=null;
 var Q=1,PC=null,PID=56;
 function qtyUI(){var bx=$("qtyBtns");if(!bx.childNodes.length){for(var i=1;i<=MAXW;i++){var b=document.createElement("button");b.type="button";b.textContent=i;b.setAttribute("data-q",i);b.onclick=function(){Q=+this.getAttribute("data-q");refresh()};bx.appendChild(b)}}
 for(var j=0;j<bx.childNodes.length;j++){var n=bx.childNodes[j],on=+n.getAttribute("data-q")===Q;n.className="x-btn"+(on?"":" x-btn--line");n.setAttribute("aria-pressed",on?"true":"false");n.style.minWidth="56px"}
-$("qtyTotal").textContent="Total: "+bnb(BigInt(Q)*BigInt(PW))+" BNB + gas"}
+$("qtyTotal").textContent="Total: "+bnb(Q*Number(PW))+" BNB + gas"}
 function refresh(){var btn=$("copyPrompt");if(!mode)return;$("agentPromptText").textContent=build(PC,PID,mode,Q);
 if(mode==="paid"){qtyUI();btn.textContent="Copy prompt · mint "+Q}else btn.textContent="Copy free mint prompt"}
 function setPrompt(m,c,id){PC=c;PID=id;
@@ -412,9 +412,12 @@ function render(d){
 function poll(){fetch("/api/mint-info",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){D=d;render(d)}).catch(function(){})}
 setInterval(function(){if(FAST)poll()},3000);
 poll();setInterval(poll,15000);setInterval(tick,1000);
-var btn=$("copyPrompt");btn.onclick=function(){var t=$("agentPromptText").textContent;function ok(){var o=btn.textContent;btn.textContent="Copied ✓ Paste it to your agent";setTimeout(function(){refresh()},1800)}
-if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else fb();
-function fb(){var a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();try{document.execCommand("copy");ok()}catch(e){}a.remove()}};
+var btn=$("copyPrompt");
+function manual(t){var m=$("manualCopy");if(!m){m=document.createElement("div");m.id="manualCopy";m.style.cssText="margin-top:14px";m.innerHTML='<p class="x-mono x-muted" style="margin-bottom:8px">Your browser blocked auto-copy. Long-press inside the box, Select all, then Copy.</p><textarea readonly style="width:100%;height:160px;background:#111;color:#ddd;border:1px solid #333;font:12px monospace;padding:10px"></textarea>';btn.parentNode.insertBefore(m,btn.nextSibling)}var ta=m.querySelector("textarea");ta.value=t;m.hidden=false;try{ta.focus();ta.select();ta.setSelectionRange(0,t.length)}catch(e){}}
+function copyText(t,done){var fin=false;function ok(){if(fin)return;fin=true;done()}
+function fb(){var r=false,a=document.createElement("textarea");a.value=t;a.setAttribute("readonly","");a.style.cssText="position:fixed;top:0;left:0;width:2em;height:2em;padding:0;border:0;outline:0;background:transparent;opacity:0.01";document.body.appendChild(a);try{a.focus();a.select();a.setSelectionRange(0,t.length);r=document.execCommand("copy")}catch(e){}document.body.removeChild(a);if(r)ok();else manual(t)}
+try{if(navigator.clipboard&&window.isSecureContext&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,fb)}else fb()}catch(e){fb()}}
+btn.onclick=function(){if(!mode)return;var t=build(PC,PID,mode,Q);$("agentPromptText").textContent=t;copyText(t,function(){var m=$("manualCopy");if(m)m.hidden=true;btn.textContent="Copied ✓ Paste it to your agent";setTimeout(function(){refresh()},1800)})};
 var bg=$("burger"),mn=$("menu");if(bg&&mn)bg.onclick=function(){var o=mn.classList.toggle("is-open");bg.setAttribute("aria-expanded",o?"true":"false")};
 })();
 </script>
