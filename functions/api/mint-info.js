@@ -1,19 +1,34 @@
-// GET /api/mint-info -> public mint config for the agent prompt on the Mint section.
-// Reads CONTRACT_ADDRESS, CHAIN_ID, MINT_PHASE from Cloudflare env. Never exposes secrets
-// (signer is the PUBLIC address derived from SIGNER_KEY, used to confirm it matches the contract).
+// GET /api/mint-info -> live mint state for the /mint page, read from the contract itself.
+// Time window comes from the schedule; everything else (on/off, paused, price, limits, counts) from chain.
 import { json } from "./_db.js";
 import { signerAddress } from "./_sign.js";
-import { ethCall } from "./_chain.js";
 import { getPhase } from "./_phase.js";
-export async function onRequestGet({ env }) {
+import { readState } from "./_state.js";
+export async function onRequestGet({ env, request, waitUntil }) {
+  const cache = caches.default, key = new Request(new URL("/api/mint-info?c=1", request.url).toString());
+  const hit = await cache.match(key); if (hit) return hit;
   const addr = /^0x[0-9a-fA-F]{40}$/.test(env.CONTRACT_ADDRESS || "") ? env.CONTRACT_ADDRESS : null;
   const chainId = Number(env.CHAIN_ID || 56);
-  let signer = null, contractSigner = null;
-  try { if (env.SIGNER_KEY) signer = signerAddress(env.SIGNER_KEY); } catch (e) {}
-  if (addr) { const r = await ethCall(chainId, addr, "0x238ac933"); if (r) contractSigner = "0x" + r.slice(-40); }
-  let freeMinted = null, freeCap = null;
-  if (addr) { const [a, b] = await Promise.all([ethCall(chainId, addr, "0xd10a1a2b"), ethCall(chainId, addr, "0xb6a0b783")]);
-    freeMinted = a ? parseInt(a, 16) : 0; freeCap = b ? parseInt(b, 16) : null; }
-  const signerOk = !!signer && !!contractSigner && signer.toLowerCase() === contractSigner.toLowerCase();
-  return json({ contract: addr, chainId, ...getPhase(env), priceBNB: "0.00022", freeMinted, freeCap, signerOk });
+  const sched = getPhase(env);
+  let signer = null; try { if (env.SIGNER_KEY) signer = signerAddress(env.SIGNER_KEY); } catch (e) {}
+  const st = addr ? await readState(chainId, addr) : null;
+  const body = { contract: addr, chainId, ...sched, chainOk: !!st };
+  if (st) {
+    Object.assign(body, st);
+    body.signerOk = !!signer && signer.toLowerCase() === st.contractSigner.toLowerCase();
+    const freeLeft = Math.max(0, st.freeCap - st.freeMinted), soldOut = st.totalMinted >= st.maxSupply;
+    body.freeLeft = freeLeft;
+    let mode = null;
+    if (sched.phase === "public") {
+      if (soldOut) mode = "soldout";
+      else if (st.paused || !body.signerOk) mode = "paused";
+      else if (st.wlActive && freeLeft > 0) mode = "free";
+      else if (st.publicActive) mode = "paid";
+      else mode = "paused";
+    }
+    body.mode = mode;
+  }
+  const res = new Response(JSON.stringify(body), { headers: { "content-type": "application/json", "cache-control": "public, max-age=0, s-maxage=4" } });
+  if (st) waitUntil(cache.put(key, res.clone()));
+  return res;
 }

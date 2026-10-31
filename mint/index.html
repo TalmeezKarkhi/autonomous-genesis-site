@@ -293,6 +293,12 @@ p.x-muted,.x-muted{color:var(--tx2)}
         <p class="x-label">Mint · AI agents only</p>
         <h1 class="m-h1 x-serif">Autonomous Genesis mint.</h1>
         <p class="x-muted" style="max-width:520px">2,222 generative neural artworks on BNB Chain. Only AI agent wallets can mint. Copy the live prompt and give it to your agent.</p>
+        <div class="m-art" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:28px;max-width:560px">
+          <figure style="margin:0"><img src="/legendary-104.webp" alt="Legendary" width="300" height="300" style="width:100%;height:auto;display:block;border:1px solid rgba(255,255,255,.12)"><figcaption class="x-label" style="margin-top:6px;font-size:10px">Legendary</figcaption></figure>
+          <figure style="margin:0"><img src="/rare-16.webp" alt="Rare" width="300" height="300" style="width:100%;height:auto;display:block;border:1px solid rgba(255,255,255,.12)"><figcaption class="x-label" style="margin-top:6px;font-size:10px">Rare</figcaption></figure>
+          <figure style="margin:0"><img src="/uncommon-11.webp" alt="Uncommon" width="300" height="300" style="width:100%;height:auto;display:block;border:1px solid rgba(255,255,255,.12)"><figcaption class="x-label" style="margin-top:6px;font-size:10px">Uncommon</figcaption></figure>
+          <figure style="margin:0"><img src="/common-1.webp" alt="Common" width="300" height="300" style="width:100%;height:auto;display:block;border:1px solid rgba(255,255,255,.12)"><figcaption class="x-label" style="margin-top:6px;font-size:10px">Common</figcaption></figure>
+        </div>
         <div class="m-phases">
           <div class="m-ph" id="ph1"><span class="x-label">Phase 1</span><b>Free mint</b><span class="x-mono x-muted">First 500 · 1 per wallet · gas only</span></div>
           <div class="m-ph" id="ph2"><span class="x-label">Phase 2</span><b>Paid mint</b><span class="x-mono x-muted">0.00022 BNB · up to 5 per wallet</span></div>
@@ -339,7 +345,9 @@ p.x-muted,.x-muted{color:var(--tx2)}
 <script>
 (function(){
 var SITE="https://autonomousgenesis.xyz";
-function build(c,id,m,q){q=q||1;var tot=(q*22/100000).toFixed(5).replace(/0+$/,""),wei=(BigInt(q)*220000000000000n).toString();
+var PW="220000000000000",PB="0.00022",MAXW=5;
+function bnb(w){w=BigInt(w);var i=w/1000000000000000000n,f=(w%1000000000000000000n).toString().padStart(18,"0").replace(/0+$/,"");return f?i+"."+f:i.toString()}
+function build(c,id,m,q){q=q||1;var wei=(BigInt(q)*BigInt(PW)).toString(),tot=bnb(wei);
 var free=m==="free",net=id===97?"BNB Smart Chain Testnet":"BNB Smart Chain (BSC) Mainnet",scan=id===97?"https://testnet.bscscan.com":"https://bscscan.com",ca=c||"Published on "+SITE+" at mint (must match the \"contract\" field in the mint pass)";
 var L="────────────────────────────────────────\n";
 var passUrl=SITE+"/api/mint-pass?wallet=<AGENT_WALLET>"+(free?"":"&type=paid");
@@ -348,7 +356,7 @@ return "AUTONOMOUS GENESIS (AUTOG) · "+(free?"FREE MINT":"PAID MINT")+" · AGEN
 "COLLECTION\n  Name ........ Autonomous Genesis (AUTOG) · ERC-721\n  Supply ...... 2,222\n  Network ..... "+net+"\n  Chain ID .... "+id+"\n  Contract .... "+ca+"\n  Website ..... "+SITE+"\n  X ........... @Autonomousgen\n\n"+
 "MINT TERMS\n"+(free?
 "  Phase ....... Free mint (first 500 mints only)\n  Cost ........ 0 BNB (gas only)\n  Limit ....... 1 per wallet\n  Function .... wlMint(uint256 deadline, bytes signature)\n  Value ....... 0\n":
-"  Phase ....... Paid mint\n  Quantity .... "+q+" NFT"+(q>1?"s":"")+"\n  Price ....... 0.00022 BNB per NFT\n  Total ....... "+tot+" BNB ("+wei+" wei) plus gas\n  Limit ....... Up to 5 per wallet\n  Function .... publicMint(uint256 quantity, uint256 deadline, bytes signature) payable\n  Value ....... "+tot+" BNB ("+wei+" wei)\n")+"\n"+
+"  Phase ....... Paid mint\n  Quantity .... "+q+" NFT"+(q>1?"s":"")+"\n  Price ....... "+PB+" BNB per NFT ("+PW+" wei)\n  Total ....... "+tot+" BNB ("+wei+" wei) plus gas\n  Limit ....... Up to "+MAXW+" per wallet\n  Function .... publicMint(uint256 quantity, uint256 deadline, bytes signature) payable\n  Value ....... "+tot+" BNB ("+wei+" wei)\n")+"\n"+
 "PROCEDURE\n"+
 "  1. Request a mint pass\n     GET "+passUrl+"\n"+
 "  2. Validate the response. Stop and report if any check fails:\n     • \"eligible\" is true (otherwise report the \"reason\")\n     • \"chainId\" equals "+id+"\n     • \"contract\" equals "+(c||"the address published on "+SITE)+"\n     • \"type\" equals \""+(free?"FREE":"PUBLIC")+"\""+(free?" (anything else means the free mints are gone or this wallet already claimed one: do not pay)":"")+"\n"+
@@ -362,14 +370,14 @@ function pad(n){return("0"+n).slice(-2)}
 function hm(t){var d=new Date(t*1000);return pad(d.getUTCHours())+":"+pad(d.getUTCMinutes())+" UTC"}
 var D=null,target=0,mode=null;
 var Q=1,PC=null,PID=56;
-function qtyUI(){var bx=$("qtyBtns");if(!bx.childNodes.length){for(var i=1;i<=5;i++){var b=document.createElement("button");b.type="button";b.textContent=i;b.setAttribute("data-q",i);b.onclick=function(){Q=+this.getAttribute("data-q");refresh()};bx.appendChild(b)}}
+function qtyUI(){var bx=$("qtyBtns");if(!bx.childNodes.length){for(var i=1;i<=MAXW;i++){var b=document.createElement("button");b.type="button";b.textContent=i;b.setAttribute("data-q",i);b.onclick=function(){Q=+this.getAttribute("data-q");refresh()};bx.appendChild(b)}}
 for(var j=0;j<bx.childNodes.length;j++){var n=bx.childNodes[j],on=+n.getAttribute("data-q")===Q;n.className="x-btn"+(on?"":" x-btn--line");n.setAttribute("aria-pressed",on?"true":"false");n.style.minWidth="56px"}
-$("qtyTotal").textContent="Total: "+(Q*22/100000).toFixed(5).replace(/0+$/,"")+" BNB + gas"}
+$("qtyTotal").textContent="Total: "+bnb(BigInt(Q)*BigInt(PW))+" BNB + gas"}
 function refresh(){var btn=$("copyPrompt");if(!mode)return;$("agentPromptText").textContent=build(PC,PID,mode,Q);
 if(mode==="paid"){qtyUI();btn.textContent="Copy prompt · mint "+Q}else btn.textContent="Copy free mint prompt"}
 function setPrompt(m,c,id){PC=c;PID=id;
   if(m===mode){refresh();return}mode=m;var btn=$("copyPrompt"),w=$("pWait");
-  if(!m){btn.hidden=true;$("qtyBox").hidden=true;w.hidden=false;return}
+  if(!m){btn.hidden=true;$("qtyBox").hidden=true;w.hidden=false;$("pLabel").textContent="Agent prompt";return}
   btn.hidden=false;w.hidden=true;$("qtyBox").hidden=m!=="paid";
   $("pLabel").textContent=m==="free"?"Live · Phase 1 · Free mint":"Live · Phase 2 · Paid mint";
   $("pTitle").textContent=m==="free"?"Free mint. 1 per wallet, first 500.":"Paid mint. Pick 1 to 5, then copy.";
@@ -380,20 +388,29 @@ function tick(){
   $("cd").textContent=pad(Math.floor(r/3600))+":"+pad(Math.floor(r%3600/60))+":"+pad(r%60);
   if(r===0){target=0;setTimeout(poll,1500)}
 }
+var LAST=null,FAST=0;
 function render(d){
-  var c=d.contract,id=d.chainId||56,cap=d.freeCap||500,fm=d.freeMinted||0,left=Math.max(0,cap-fm),out=d.freeCap!=null&&left===0;
+  if(d.chainOk===false){if(LAST)return;}else LAST=d;
+  var c=d.contract,id=d.chainId||56,cap=d.freeCap||500,fm=d.freeMinted||0,left=Math.max(0,cap-fm);
+  if(d.priceWei&&/^\d+$/.test(d.priceWei)){PW=d.priceWei;PB=d.priceBNB||bnb(PW)}
+  if(d.maxPerWallet>0&&d.maxPerWallet<=20&&d.maxPerWallet!==MAXW){MAXW=d.maxPerWallet;$("qtyBtns").innerHTML="";if(Q>MAXW)Q=MAXW}
+  $("ph2").querySelector("span.x-mono").textContent=PB+" BNB · up to "+MAXW+" per wallet";
+  if(typeof d.totalMinted==="number"){var mx=d.maxSupply||2222;$("mMinted").textContent=d.totalMinted.toLocaleString("en-US");$("mBar").style.width=Math.min(100,d.totalMinted/mx*100)+"%"}
   if(c){var cc=$("caCell");if(!cc.getAttribute("data-set")){cc.setAttribute("data-set","1");cc.innerHTML="";var a=document.createElement("a");a.className="x-link";a.target="_blank";a.rel="noopener";a.href="https://bscscan.com/address/"+c;a.textContent=c.slice(0,6)+"…"+c.slice(-4)+" ↗";cc.appendChild(a)}}
   var b=$("badge"),bt=$("badgeT"),p1=$("ph1"),p2=$("ph2");p1.className="m-ph";p2.className="m-ph";
-  if(d.phase==="ended"){b.className="m-badge";bt.textContent="Mint ended";target=0;$("cd").textContent="Ended";$("cdSub").textContent="Thanks for minting. Reveal comes next.";p1.className="m-ph is-done";p2.className="m-ph is-done";setPrompt(null);$("pTitle").textContent="Mint has ended.";$("pWait").textContent="The mint is closed.";return}
-  if(d.phase!=="public"){b.className="m-badge";bt.textContent="Not live yet";if(d.startsAt){target=d.startsAt;tick();$("cdSub").textContent="Opens "+new Date(d.startsAt*1000).toISOString().slice(0,10)+" · "+hm(d.startsAt)+" · runs 12h"}setPrompt(null);return}
-  b.className="m-badge is-live";
-  if(out){bt.textContent="Live · Paid mint";p1.className="m-ph is-done";p2.className="m-ph is-on";$("mFree").textContent="· free 500 sold out"}
-  else{bt.textContent="Live · Free mint";p1.className="m-ph is-on";$("mFree").textContent="· "+left+" free left"}
+  var so=d.mode==="soldout";
+  if(d.phase==="ended"||so){b.className="m-badge";bt.textContent=so?"Sold out":"Mint ended";target=0;$("cd").textContent=so?"Sold out":"Ended";$("cdSub").textContent="Thanks for minting. Reveal comes next.";p1.className="m-ph is-done";p2.className="m-ph is-done";setPrompt(null);$("pTitle").textContent=so?"All 2,222 minted.":"Mint has ended.";$("pWait").textContent="The mint is closed.";return}
+  if(d.phase!=="public"){b.className="m-badge";bt.textContent="Not live yet";if(d.startsAt){target=d.startsAt;tick();$("cdSub").textContent="Opens "+new Date(d.startsAt*1000).toISOString().slice(0,10)+" · "+hm(d.startsAt)+" · runs 12h";FAST=d.startsAt<=Math.floor(Date.now()/1000)?1:0}setPrompt(null);return}
+  FAST=0;
   if(d.endsAt){target=d.endsAt;tick();$("cdSub").textContent="Time left · ends "+hm(d.endsAt)}
-  setPrompt(out?"paid":"free",c,id);
+  if(d.mode!=="free"&&d.mode!=="paid"){if(d.mode===undefined&&!LAST)return;b.className="m-badge";bt.textContent="Paused";setPrompt(null);$("pTitle").textContent="Mint is paused for a moment.";$("pWait").textContent="Hold tight. This page refreshes on its own. Updates on x.com/Autonomousgen.";return}
+  b.className="m-badge is-live";
+  if(d.mode==="paid"){bt.textContent="Live · Paid mint";p1.className="m-ph is-done";p2.className="m-ph is-on";$("mFree").textContent="· free 500 claimed"}
+  else{bt.textContent="Live · Free mint";p1.className="m-ph is-on";$("mFree").textContent="· "+left+" of "+cap+" free left"}
+  setPrompt(d.mode,c,id);
 }
-function poll(){fetch("/api/mint-info",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){D=d;render(d)}).catch(function(){});
-  fetch("/api/supply",{cache:"no-store"}).then(function(r){return r.json()}).then(function(s){if(typeof s.minted==="number"){$("mMinted").textContent=s.minted.toLocaleString("en-US");$("mBar").style.width=Math.min(100,s.minted/2222*100)+"%"}}).catch(function(){})}
+function poll(){fetch("/api/mint-info",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){D=d;render(d)}).catch(function(){})}
+setInterval(function(){if(FAST)poll()},3000);
 poll();setInterval(poll,15000);setInterval(tick,1000);
 var btn=$("copyPrompt");btn.onclick=function(){var t=$("agentPromptText").textContent;function ok(){var o=btn.textContent;btn.textContent="Copied ✓ Paste it to your agent";setTimeout(function(){refresh()},1800)}
 if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else fb();
