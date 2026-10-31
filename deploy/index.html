@@ -92,13 +92,18 @@ code{font:400 13px var(--mono);color:var(--tx);background:var(--bg);padding:1px 
     </div>
     <div class="grid2">
       <div class="f" id="fCap"><label class="lbl" for="cap">WL mint cap (private)</label><input id="cap" inputmode="numeric" placeholder="e.g. 300"><small>Total free WL mints. Never shown on the site.</small></div>
-      <div class="f" id="fSub"><label class="lbl" for="sub">Chainlink VRF subscription ID</label><input id="sub" inputmode="numeric" placeholder="long number from vrf.chain.link"><small>Create it at <a href="https://vrf.chain.link" target="_blank" rel="noopener">vrf.chain.link</a> on the same network.</small></div>
+    </div>
+    <div class="f" id="fCommit"><label class="lbl" for="commit">Reveal lock (commit)</label><input id="commit" placeholder="0x… (tap Generate)" spellcheck="false">
+      <small>Locks a secret number now so nobody can know the final art order during mint. Free, no Chainlink.</small>
+      <div class="row" style="margin-top:10px"><button class="btn line" id="genSecret" type="button">Generate reveal secret</button></div>
+      <div class="secret" id="rsecret" hidden>
+        <p class="lbl" style="color:var(--warn)">Save this now. You need it for the reveal.</p>
+        <p style="margin-top:10px">REVEAL_SECRET: <span id="rKey"></span></p>
+        <div class="row" style="margin-top:12px"><button class="btn line" id="copySecret" type="button">Copy secret</button><button class="btn line" id="dlSecret" type="button">Download backup</button></div>
+        <p style="margin-top:12px;color:var(--tx2)">Keep it private until mint ends. If you lose it, the collection can't reveal (it can only be replaced before the first mint).</p>
+      </div>
     </div>
     <div class="f" id="fHidden"><label class="lbl" for="hidden">Hidden (Vault) metadata URI</label><input id="hidden" placeholder="ipfs://<CID>/hidden.json" spellcheck="false"><small>The sealed Vault metadata every token shows until reveal. Can be changed later with setHiddenURI.</small></div>
-    <div class="grid2">
-      <div class="f"><label class="lbl">VRF coordinator (auto)</label><input id="coord" readonly></div>
-      <div class="f"><label class="lbl">VRF key hash (auto)</label><input id="kh" readonly></div>
-    </div>
     <div class="f"><label class="lbl">Fixed in the contract</label>
       <small>Supply 2,222 · WL free, 1 per wallet · Public 0.00022 BNB, 3 per wallet · Royalty 5% · Mint phases start OFF</small></div>
   </div>
@@ -128,9 +133,9 @@ code{font:400 13px var(--mono);color:var(--tx);background:var(--bg);padding:1px 
     </ol>
     <h2 style="margin-top:32px;font-size:24px">Then</h2>
     <ol class="steps">
-      <li>At <a href="https://vrf.chain.link" target="_blank" rel="noopener">vrf.chain.link</a>, open your subscription and <b>Add consumer</b> → paste the contract address. Fund it with BNB.</li>
       <li>Send Hark the contract address and network. Hark sets CONTRACT_ADDRESS, CHAIN_ID, SIGNER_KEY and MINT_PHASE on the website.</li>
       <li>On BscScan → Write Contract → connect admin wallet → <code>setPhases(true,false)</code> opens WL. <code>setPhases(false,true)</code> opens public. <code>setPhases(false,false)</code> closes mint.</li>
+      <li>Reveal, after mint ends: <code>setPhases(false,false)</code> → <code>lockRevealBlock()</code> → wait 10 seconds → <code>setRevealOffset(REVEAL_SECRET)</code> within 3 minutes (if late, lock again) → <code>reveal(ipfs://&lt;METADATA_CID&gt;/)</code>.</li>
     </ol>
   </div>
 
@@ -143,10 +148,8 @@ code{font:400 13px var(--mono);color:var(--tx);background:var(--bg);padding:1px 
 (function(){
   var E = window.ethers, A = window.AUTOG_ARTIFACT;
   var NETS = {
-    97: {name:"BSC Testnet", hex:"0x61", rpc:"https://data-seed-prebsc-1-s1.bnbchain.org:8545", scan:"https://testnet.bscscan.com", sym:"tBNB",
-         coord:"0xDA3b641D438362C440Ac5458c57e00a712b66700", kh:"0x8596b430971ac45bdf6088665b9ad8e8630c9d5049ab54b14dff711bee7c0e26"},
-    56: {name:"BNB Smart Chain Mainnet", hex:"0x38", rpc:"https://bsc-dataseed.bnbchain.org", scan:"https://bscscan.com", sym:"BNB",
-         coord:"0xd691f04bc0C9a24Edb78af9E005Cf85768F694C9", kh:"0x130dba50ad435d4ecc214aad0d5820474137bd68e7e77724144f27c3c377d3d4"}
+    97: {name:"BSC Testnet", hex:"0x61", rpc:"https://data-seed-prebsc-1-s1.bnbchain.org:8545", scan:"https://testnet.bscscan.com", sym:"tBNB"},
+    56: {name:"BNB Smart Chain Mainnet", hex:"0x38", rpc:"https://bsc-dataseed.bnbchain.org", scan:"https://bscscan.com", sym:"BNB"}
   };
   var $ = function(i){return document.getElementById(i)};
   var chain = 97, eth = null, account = null, providers = [], lastArgs = "";
@@ -161,7 +164,6 @@ code{font:400 13px var(--mono);color:var(--tx);background:var(--bg);padding:1px 
   function setNet(n){
     chain = n;
     [].forEach.call(document.querySelectorAll("#net button"), function(b){b.setAttribute("aria-pressed", b.dataset.n==String(n))});
-    $("coord").value = NETS[n].coord; $("kh").value = NETS[n].kh;
     $("mainChk").hidden = n !== 56;
     $("deploy").textContent = "Deploy on " + (n===56 ? "Mainnet" : "Testnet");
     refresh();
@@ -223,18 +225,27 @@ code{font:400 13px var(--mono);color:var(--tx);background:var(--bg);padding:1px 
     $("signer").value = w.address; $("sAddr").textContent = w.address; $("sKey").textContent = w.privateKey;
     $("secret").hidden = false;
   };
+  $("genSecret").onclick = function(){
+    var sec = E.hexlify(E.randomBytes(32));
+    $("rKey").textContent = sec; $("commit").value = E.keccak256(sec); $("rsecret").hidden = false;
+  };
+  $("copySecret").onclick = function(){navigator.clipboard.writeText($("rKey").textContent); this.textContent = "Copied"};
+  $("dlSecret").onclick = function(){
+    var t = "AUTOG reveal secret (keep private until reveal)\nREVEAL_SECRET=" + $("rKey").textContent + "\nREVEAL_COMMIT=" + $("commit").value + "\n";
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([t], {type:"text/plain"})); a.download = "autog-reveal-secret.txt"; a.click();
+  };
   $("copyKey").onclick = function(){navigator.clipboard.writeText($("sKey").textContent); this.textContent = "Copied"};
 
   function val(){
     var bad = false;
     function chk(fid, ok){document.getElementById(fid).classList.toggle("bad", !ok); if(!ok) bad = true}
     var admin = $("admin").value.trim(), roy = $("roy").value.trim(), signer = $("signer").value.trim(),
-        cap = $("cap").value.trim(), sub = $("sub").value.trim(), hidden = $("hidden").value.trim();
+        cap = $("cap").value.trim(), commit = $("commit").value.trim(), hidden = $("hidden").value.trim();
     chk("fAdmin", E.isAddress(admin)); chk("fRoy", E.isAddress(roy)); chk("fSigner", E.isAddress(signer) && (!account || signer.toLowerCase() !== account.toLowerCase()));
     chk("fCap", /^\d+$/.test(cap) && Number(cap) > 0 && Number(cap) <= 2222);
-    chk("fSub", /^\d+$/.test(sub)); chk("fHidden", /^ipfs:\/\/.+\.json$/.test(hidden));
+    chk("fCommit", /^0x[0-9a-fA-F]{64}$/.test(commit) && !/^0x0{64}$/.test(commit)); chk("fHidden", /^ipfs:\/\/.+\.json$/.test(hidden));
     if (bad) return null;
-    return [E.getAddress(admin), E.getAddress(signer), hidden, BigInt(cap), NETS[chain].coord, BigInt(sub), NETS[chain].kh, E.getAddress(roy), 500];
+    return [E.getAddress(admin), E.getAddress(signer), hidden, BigInt(cap), commit, E.getAddress(roy), 500];
   }
 
   $("deploy").onclick = function(){
