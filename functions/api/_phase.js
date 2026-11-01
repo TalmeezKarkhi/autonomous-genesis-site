@@ -3,7 +3,10 @@
 // then paid publicMint. Default start: 2026-10-31 18:30 UTC.
 // Manual override: MINT_PHASE = stop (kill switch) | public. Anything else (off/auto/unset) follows the schedule.
 export const DEFAULT_START = "2026-10-31T18:30:00Z";
+// Mint permanently closed on-chain 2026-11-01 (maxSupply reduced to totalMinted). Site always reports "ended".
+export const MINT_CLOSED = true;
 export function getPhase(env, now = Math.floor(Date.now() / 1000)) {
+  if (MINT_CLOSED) return { phase: "ended", endsAt: null };
   const manual = (env.MINT_PHASE || "").toLowerCase();
   if (manual === "stop") return { phase: "off", endsAt: null };
   if (manual === "public") return { phase: "public", endsAt: null };
