@@ -373,7 +373,7 @@ p.x-muted,.x-muted{color:var(--tx2)}
             <div><dt>Trading</dt><dd>Element, after mint</dd></div>
           </dl>
           <div class="x-prog"><p class="x-mono"><span class="x-muted">Minted</span> <span id="mintCount">0</span> / 2,222 <span class="x-muted" id="mintLive"></span></p><div class="x-bar"><i id="mintBar" style="width:0;transition:width .8s ease"></i></div></div>
-          <button class="x-btn" id="mintBtn" onclick="location.href='/mint'">Mint opens at 18:30 UTC</button> <a class="x-btn x-btn--line" href="/mint">Open mint page</a>
+          <button class="x-btn" id="mintBtn" onclick="location.href='/mint'">Mint opens at 18:30 UTC</button> <a class="x-btn x-btn--line" id="mintPageBtn" href="/mint">Open mint page</a>
         </div>
       </div>
       <div class="x-agent" id="agent-prompt" hidden style="display:none">
@@ -683,7 +683,7 @@ function live(ph,d){d=d||{};var cap=d.freeCap||500,fm=d.freeMinted||0,left=Math.
 if(FREE_OUT){T("dl1","Price");T("dv1","0.00022 BNB");T("dl2","Per wallet");T("dv2","Up to 5");if(mode==="free")mode="paid"}
 else{T("dl1","First 500");T("dv1","FREE");T("dl2","Then");T("dv2","0.00022 BNB")}
 render(CA,CID);
-if(ph==="ended"){T("mintStatus","Mint ended");var mb0=document.getElementById("mintBtn");if(mb0){mb0.disabled=true;mb0.textContent="Mint ended"}return}
+if(ph==="ended"){stopCd();T("mintStatus","Minting Closed");var mb0=document.getElementById("mintBtn");if(mb0){mb0.disabled=true;mb0.onclick=null;mb0.textContent="Minting Closed"}var mp=document.getElementById("mintPageBtn");if(mp)mp.hidden=true;var h0=document.getElementById("heroCta");if(h0){h0.textContent="Minting Closed";h0.removeAttribute("href");h0.setAttribute("aria-disabled","true");h0.style.pointerEvents="none";h0.style.opacity=".55"}var hs0=document.getElementById("heroStatus");if(hs0)hs0.textContent="Minting closed · collection unrevealed";return}
 if(ph==="off"&&d.startsAt&&d.startsAt*1000>Date.now()){T("mintStatus","Opens "+new Date(d.startsAt*1000).toISOString().slice(0,10)+" "+hm(d.startsAt)+" · 12h · first 500 free");startCd(d.startsAt);return}stopCd();
 if(!/^(wl|public|both)$/.test(ph))return;
 var lbl=FREE_OUT?"Live · Free sold out · 0.00022 BNB, up to 5 per wallet":"Live · First 500 FREE · "+left+" free left";if(d.endsAt)lbl+=" · ends "+hm(d.endsAt);
